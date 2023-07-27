@@ -1,11 +1,5 @@
-import requests
-from bs4 import BeautifulSoup
 import time
-import os
-from threading import Thread
-import numpy
-import re
-from fake_useragent import UserAgent
+
 
 # url = 'https://theathletic.com/'
 headers = {
