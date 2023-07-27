@@ -39,13 +39,24 @@ def check_progress():
 
 
 def save_log(start, end, now):
-    filename = local_path + 'log_' + str(start) + '_' + str(end) + '.txt'
+    log_path = local_path + 'log/'
+    
+    if not os.path.exists(log_path):
+        os.mkdir(log_path)
+        
+    filename = log_path + 'log_' + str(start) + '_' + str(end) + '.txt'
     f = open(filename, 'w', encoding='UTF-8')
     f.write(str(now))
 
 
 def check_log(start, end):
-    filename = local_path + 'log_' + str(start) + '_' + str(end) + '.txt'
+    log_path = local_path + 'log/'
+    
+    if not os.path.exists(log_path):
+        os.mkdir(log_path)
+        
+    filename = log_path + 'log_' + str(start) + '_' + str(end) + '.txt'
+    
     if not os.path.exists(filename):
         f = open(filename, 'w')
 
@@ -397,42 +408,6 @@ def get_asap_interview(page_num):
     except:
         return 'Error'
 
-
-
-'''
-def my_content(my_url):
-
-    print('scraping article in ' + my_url)
-    try:
-        res = requests.get(my_url, headers=headers).text
-    except InterruptedError:
-        time.sleep(10)
-        res = requests.get(my_url, headers=headers).text
-    content = BeautifulSoup(res, "html.parser")
-    filecontent = "content"
-    try:
-        headline = content.find(attrs={'class': 'article-headline'}).text
-        filecontent = headline
-    except AttributeError:
-        pass
-
-    try:
-        liveblog = content.find(attrs={'id':'live-blog-container'}).get_text(separator='\n')
-        filecontent = liveblog
-
-    except AttributeError:
-        pass
-
-    try:
-        article = content.find(attrs={'id':'article-container-grid'}).get_text(separator='\n')
-        filecontent = filecontent + article
-    except AttributeError:
-        pass
-
-    filecontent = filecontent.replace('Advertisement\n', '')
-
-    return filecontent
-'''
 
 
 def save_as_txt(file_name, file_content):
