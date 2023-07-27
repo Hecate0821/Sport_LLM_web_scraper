@@ -19,33 +19,25 @@ end_page = int(189649)
 local_path = const_local_path + str(start_page) + '_to_' + str(end_page) + '/'
 
 
-def check_progress():
-    workload = int((end_page - start_page) / 100)
-
-    for i in range(1, 101):
-        filename = local_path + 'log_' + str(start_page + (i - 1) * workload) + '_' + str(
-            start_page + i * workload) + '.txt'
-
-        f = open(filename, 'r')
-
-        now = int(f.readline().rstrip())
-
-        percentage = (int(now) - start_page - (i - 1) * workload) / workload * 100
-
-        print('Thread ' + str(i) + ': ' + str(now) + ' / ' + str(start_page + i * workload) + ' Progress: ' + str(
-            percentage) + '%')
-
-    time.sleep(5)
-
-
 def save_log(start, end, now):
-    filename = local_path + 'log_' + str(start) + '_' + str(end) + '.txt'
+    log_path = local_path + 'log/'
+    
+    if not os.path.exists(log_path):
+        os.mkdir(log_path)
+        
+    filename = log_path + 'log_' + str(start) + '_' + str(end) + '.txt'
     f = open(filename, 'w', encoding='UTF-8')
     f.write(str(now))
 
 
 def check_log(start, end):
-    filename = local_path + 'log_' + str(start) + '_' + str(end) + '.txt'
+    log_path = local_path + 'log/'
+    
+    if not os.path.exists(log_path):
+        os.mkdir(log_path)
+        
+    filename = log_path + 'log_' + str(start) + '_' + str(end) + '.txt'
+    
     if not os.path.exists(filename):
         f = open(filename, 'w')
 
@@ -399,42 +391,6 @@ def get_asap_interview(page_num):
 
 
 
-'''
-def my_content(my_url):
-
-    print('scraping article in ' + my_url)
-    try:
-        res = requests.get(my_url, headers=headers).text
-    except InterruptedError:
-        time.sleep(10)
-        res = requests.get(my_url, headers=headers).text
-    content = BeautifulSoup(res, "html.parser")
-    filecontent = "content"
-    try:
-        headline = content.find(attrs={'class': 'article-headline'}).text
-        filecontent = headline
-    except AttributeError:
-        pass
-
-    try:
-        liveblog = content.find(attrs={'id':'live-blog-container'}).get_text(separator='\n')
-        filecontent = liveblog
-
-    except AttributeError:
-        pass
-
-    try:
-        article = content.find(attrs={'id':'article-container-grid'}).get_text(separator='\n')
-        filecontent = filecontent + article
-    except AttributeError:
-        pass
-
-    filecontent = filecontent.replace('Advertisement\n', '')
-
-    return filecontent
-'''
-
-
 def save_as_txt(file_name, file_content):
     if (file_content != 'content') and (file_content[0:5] != 'Error'):
         # encode is needed on windows
@@ -445,9 +401,6 @@ def save_as_txt(file_name, file_content):
     else:
         pass
 
-
-# for checking the progress on each thread:
-# check_progress()
 
 # start
 if not os.path.exists(local_path):
