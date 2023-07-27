@@ -384,7 +384,7 @@ def get_asap_interview(page_num):
     url = f'https://www.asapsports.com/show_interview.php?id={page_num}'
     time.sleep(0.1)
     try:
-         ua = UserAgent()
+        ua = UserAgent()
         random_ua = ua.random
         headers = {'User-Agent':random_ua}
         response = requests.get(url, headers=headers)
@@ -475,13 +475,6 @@ while True:
         pass
 
 
-
-
-import requests
-from bs4 import BeautifulSoup
-import time
-from tqdm import tqdm
-from fake_useragent import UserAgent
 
 
 
