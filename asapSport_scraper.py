@@ -384,13 +384,15 @@ def get_asap_interview(page_num):
     url = f'https://www.asapsports.com/show_interview.php?id={page_num}'
     time.sleep(0.1)
     try:
-         ua = UserAgent()
+        ua = UserAgent()
         random_ua = ua.random
         headers = {'User-Agent':random_ua}
         response = requests.get(url, headers=headers)
         soup = BeautifulSoup(response.text, 'html.parser')
         art = soup.find(style="padding: 10px;")
         article = art.text
+        if 'Requested Event is not found' in article:
+            return 'Error'
         return article
     except:
         return 'Error'
