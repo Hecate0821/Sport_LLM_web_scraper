@@ -5,6 +5,7 @@ import os
 from threading import Thread
 import numpy
 import re
+from fake_useragent import UserAgent
 
 # url = 'https://theathletic.com/'
 headers = {
@@ -383,6 +384,9 @@ def scraper(start, end):
 def get_BR_report(page_num):
     url = f'https://bleacherreport.com/articles/{page_num}'
     time.sleep(0.5)
+    ua = UserAgent()
+    random_ua = ua.random
+    headers = {'User-Agent':random_ua}
     response = requests.get(url, headers=headers)
     soup = BeautifulSoup(response.text, 'html.parser')
     soup = [s.extract() for s in soup('href')]
@@ -484,10 +488,3 @@ while True:
         print("restarting...")
         time.sleep(3)
         pass
-
-
-
-
-
-
-
