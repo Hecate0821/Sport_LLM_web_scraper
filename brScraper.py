@@ -7,12 +7,12 @@ import numpy
 import re
 
 # url = 'https://theathletic.com/'
-headers = {'User-Agent':'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36 Edg/107.0.1418.35'}
+headers = {
+    'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36 Edg/107.0.1418.35'}
 
 const_local_path = '/Users/hecate/Downloads/BR/'
 
-
-start_page = int(0)
+start_page = int(140000)
 end_page = int(10100000)
 
 local_path = const_local_path + str(start_page) + '_to_' + str(end_page) + '/'
@@ -22,15 +22,17 @@ def check_progress():
     workload = int((end_page - start_page) / 100)
 
     for i in range(1, 101):
-        filename = local_path + 'log_' + str(start_page + (i-1) * workload) + '_' + str(start_page + i * workload) + '.txt'
+        filename = local_path + 'log_' + str(start_page + (i - 1) * workload) + '_' + str(
+            start_page + i * workload) + '.txt'
 
         f = open(filename, 'r')
 
         now = int(f.readline().rstrip())
 
-        percentage = (int(now) - start_page - (i-1) * workload) / workload * 100
+        percentage = (int(now) - start_page - (i - 1) * workload) / workload * 100
 
-        print('Thread ' + str(i) + ': ' + str(now) + ' / ' + str(start_page + i * workload) + ' Progress: ' + str(percentage) + '%')
+        print('Thread ' + str(i) + ': ' + str(now) + ' / ' + str(start_page + i * workload) + ' Progress: ' + str(
+            percentage) + '%')
 
     time.sleep(5)
 
@@ -57,7 +59,6 @@ def check_log(start, end):
 
 
 def main():
-
     workload = int((end_page - start_page) / 100)
 
     t1 = Thread(target=scraper, args=[start_page + 0 * workload, start_page + 1 * workload, ])
@@ -363,6 +364,7 @@ def main():
 
     return 0
 
+
 def scraper(start, end):
     now = 0
     while True:
@@ -383,9 +385,18 @@ def get_BR_report(page_num):
     time.sleep(0.5)
     response = requests.get(url, headers=headers)
     soup = BeautifulSoup(response.text, 'html.parser')
-    art = soup.find(id='page-content')
-    article = art.text
-    filtered_text = article.split('Home')[1]
+    soup = [s.extract() for s in soup('href')]
+    try:
+        art = soup.find(id='page-content')
+        article = art.text
+    except:
+        return 'Error'
+
+    if 'Home' in article:
+        filtered_text = article.split('Home')[1]
+    else:
+        filtered_text = article
+
     line_to_remove = "✨ Watch more top videos, highlights, and B/R original content"
     if line_to_remove in filtered_text:
         pattern = re.escape(line_to_remove)
@@ -393,10 +404,9 @@ def get_BR_report(page_num):
         filtered_text = re.sub(r'\n\s*\n', '\n', cleaned_paragraph).strip()
     line_to_remove2 = 'Facebook LogoTwitter LogoCopy Link Icon'
     if line_to_remove2 in filtered_text:
-        pass
-
-    filtered_text=filtered_text.split(line_to_remove2)[0]
+        filtered_text = filtered_text.split(line_to_remove2)[0]
     return filtered_text
+
 
 '''
 def my_content(my_url):
@@ -433,15 +443,17 @@ def my_content(my_url):
     return filecontent
 '''
 
+
 def save_as_txt(file_name, file_content):
     if (file_content != 'content') and (file_content[0:5] != 'Error'):
         # encode is needed on windows
-        f = open(local_path + file_name+'.txt', 'w', encoding='UTF-8')
+        f = open(local_path + file_name + '.txt', 'w', encoding='UTF-8')
         f.write(file_content)
         f.close()
 
     else:
         pass
+
 
 # for checking the progress on each thread:
 # check_progress()
