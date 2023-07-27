@@ -9,7 +9,9 @@ def check_progress():
     workload = int((end_page - start_page) / 100)
 
     for i in range(1, 101):
-        filename = local_path + 'log_' + str(start_page + (i - 1) * workload) + '_' + str(
+        log_path = local_path + 'log/'
+    
+        filename = log_path + 'log_' + str(start_page + (i - 1) * workload) + '_' + str(
             start_page + i * workload) + '.txt'
 
         f = open(filename, 'r')
