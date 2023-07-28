@@ -16,6 +16,7 @@ start_page = int(100)
 end_page = int(200)
 
 # thread number
+# (end - start) is preferably a multiple of thread number
 thread_num = int(100)
 
 
