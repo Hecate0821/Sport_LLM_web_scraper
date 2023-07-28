@@ -7,7 +7,7 @@ import numpy
 import re
 from fake_useragent import UserAgent
 
-# url = 'https://theathletic.com/'
+url = 'https://bleacherreport.com/articles/'
 headers = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36 Edg/107.0.1418.35'}
 
@@ -19,33 +19,14 @@ end_page = int(10100000)
 local_path = const_local_path + str(start_page) + '_to_' + str(end_page) + '/'
 
 
-def check_progress():
-    workload = int((end_page - start_page) / 100)
-
-    for i in range(1, 101):
-        filename = local_path + 'log_' + str(start_page + (i - 1) * workload) + '_' + str(
-            start_page + i * workload) + '.txt'
-
-        f = open(filename, 'r')
-
-        now = int(f.readline().rstrip())
-
-        percentage = (int(now) - start_page - (i - 1) * workload) / workload * 100
-
-        print('Thread ' + str(i) + ': ' + str(now) + ' / ' + str(start_page + i * workload) + ' Progress: ' + str(
-            percentage) + '%')
-
-    time.sleep(5)
-
-
 def save_log(start, end, now):
-    filename = local_path + 'log_' + str(start) + '_' + str(end) + '.txt'
+    filename = log_path + 'log_' + str(start) + '_' + str(end) + '.txt'
     f = open(filename, 'w', encoding='UTF-8')
     f.write(str(now))
 
 
 def check_log(start, end):
-    filename = local_path + 'log_' + str(start) + '_' + str(end) + '.txt'
+    filename = log_path + 'log_' + str(start) + '_' + str(end) + '.txt'
     if not os.path.exists(filename):
         f = open(filename, 'w')
 
@@ -382,74 +363,38 @@ def scraper(start, end):
 
 
 def get_BR_report(page_num):
-    url = f'https://bleacherreport.com/articles/{page_num}'
-    time.sleep(0.5)
+    my_url = url + str(page_num)
     ua = UserAgent()
     random_ua = ua.random
     headers = {'User-Agent':random_ua}
-    response = requests.get(url, headers=headers)
-    soup = BeautifulSoup(response.text, 'html.parser')
-    soup = [s.extract() for s in soup('href')]
+    response = requests.get(my_url, headers=headers)
+    content = BeautifulSoup(response.text, 'html.parser')
+
+
     try:
-        art = soup.find(id='page-content')
-        article = art.text
+        art = content.find(attrs={'id': 'page-content'})
     except:
         return 'Error'
 
-    if 'Home' in article:
-        filtered_text = article.split('Home')[1]
-    else:
-        filtered_text = article
-
-    line_to_remove = "✨ Watch more top videos, highlights, and B/R original content"
-    if line_to_remove in filtered_text:
-        pattern = re.escape(line_to_remove)
-        cleaned_paragraph = re.sub(pattern, '', filtered_text)
-        filtered_text = re.sub(r'\n\s*\n', '\n', cleaned_paragraph).strip()
-    line_to_remove2 = 'Facebook LogoTwitter LogoCopy Link Icon'
-    if line_to_remove2 in filtered_text:
-        filtered_text = filtered_text.split(line_to_remove2)[0]
-    return filtered_text
-
-
-'''
-def my_content(my_url):
-
-    print('scraping article in ' + my_url)
     try:
-        res = requests.get(my_url, headers=headers).text
-    except InterruptedError:
-        time.sleep(10)
-        res = requests.get(my_url, headers=headers).text
-    content = BeautifulSoup(res, "html.parser")
-    filecontent = "content"
-    try:
-        headline = content.find(attrs={'class': 'article-headline'}).text
-        filecontent = headline
-    except AttributeError:
+        for span in art.find_all('div', {'class': 'atom share'}):
+            span.decompose()
+
+    except:
         pass
 
-    try:
-        liveblog = content.find(attrs={'id':'live-blog-container'}).get_text(separator='\n')
-        filecontent = liveblog
-
-    except AttributeError:
-        pass
 
     try:
-        article = content.find(attrs={'id':'article-container-grid'}).get_text(separator='\n')
-        filecontent = filecontent + article
-    except AttributeError:
+        for button in art.find_all('button', {'class': 'atom button'}):
+            button.decompose()
+    except:
         pass
 
-    filecontent = filecontent.replace('Advertisement\n', '')
-
-    return filecontent
-'''
+    return art.get_text()
 
 
 def save_as_txt(file_name, file_content):
-    if (file_content != 'content') and (file_content[0:5] != 'Error'):
+    if (file_content != 'content') and (file_content[0:5] != 'Error') and (file_content[0:5] != 'error'):
         # encode is needed on windows
         f = open(local_path + file_name + '.txt', 'w', encoding='UTF-8')
         f.write(file_content)
@@ -465,6 +410,11 @@ def save_as_txt(file_name, file_content):
 # start
 if not os.path.exists(local_path):
     os.mkdir(local_path)
+
+log_path = local_path + 'log/'
+
+if not os.path.exists(log_path):
+    os.mkdir(log_path)
 
 rst = 1
 
