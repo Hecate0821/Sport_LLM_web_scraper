@@ -390,7 +390,19 @@ def get_BR_report(page_num):
     except:
         pass
 
-    return art.get_text()
+
+    '''
+    try:
+        for a_tag in art.find_all('a', {'href': True, 'rel': "noopener noreferrer"}):
+            print(a_tag)
+            a_tag.decompose()
+    except:
+        print('atag except')
+        pass
+    '''
+
+
+    return art.get_text(separator=' ')
 
 
 def save_as_txt(file_name, file_content):
@@ -417,6 +429,7 @@ if not os.path.exists(log_path):
     os.mkdir(log_path)
 
 rst = 1
+
 
 while True:
 
