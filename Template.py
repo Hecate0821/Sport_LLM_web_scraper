@@ -18,6 +18,7 @@ end_page = int(200)
 # thread number
 thread_num = int(100)
 
+
 # please return '404' or 'error' for unwanted pages 
 def get_content(page_num):
     my_url = url + str(page_num)
@@ -84,8 +85,6 @@ def scraper(start, end):
         now = now + 1
 
 
-
-
 def save_as_txt(file_name, file_content):
     if (file_content[0:5] != 'Error') and (file_content[0:5] != 'error') and (file_content[0:3] != '404'):
         # encode is needed on windows
@@ -110,9 +109,7 @@ if __name__ == '__main__':
 
     rst = 1
 
-
     while True:
-
         my_count = 0
         print('in round:' + str(my_count))
         my_count = my_count + 1
@@ -120,7 +117,6 @@ if __name__ == '__main__':
             rst = main()
             if rst == 0:
                 break
-
 
         except KeyboardInterrupt:
             print('exit')
