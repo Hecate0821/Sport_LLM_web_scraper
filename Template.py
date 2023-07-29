@@ -54,7 +54,7 @@ def check_log(start, end):
 
 
 def main():
-    workload = int((end_page - start_page) / 100)
+    workload = int((end_page - start_page) / thread_num)
 
     thread_list = []
 
