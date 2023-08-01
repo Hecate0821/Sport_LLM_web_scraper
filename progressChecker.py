@@ -5,7 +5,7 @@ end_page = int(38200500)
 
 local_path = const_local_path + str(start_page) + '_to_' + str(end_page) + '/'
 
-thread_num = int(300)
+thread_num = int(500)
 
 def check_progress():
     workload = int((end_page - start_page) / thread_num)
