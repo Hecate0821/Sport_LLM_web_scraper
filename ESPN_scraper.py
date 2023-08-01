@@ -20,7 +20,7 @@ end_page = int(38200500)
 
 # thread number
 # (end - start) is preferably a multiple of thread number
-thread_num = int(300)
+thread_num = int(500)
 
 login_url = 'https://registerdisney.go.com/jgc/v8/client/ESPN-ONESITE.WEB-PROD/guest/login?langPref=en-US&feature=no-password-reuse'
 
