@@ -5,10 +5,12 @@ end_page = int(10100000)
 
 local_path = const_local_path + str(start_page) + '_to_' + str(end_page) + '/'
 
-def check_progress():
-    workload = int((end_page - start_page) / 100)
+thread_num = int(1000)
 
-    for i in range(1, 101):
+def check_progress():
+    workload = int((end_page - start_page) / thread_num)
+
+    for i in range(1, thread_num+1):
         log_path = local_path + 'log/'
     
         filename = log_path + 'log_' + str(start_page + (i - 1) * workload) + '_' + str(
