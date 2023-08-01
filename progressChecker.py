@@ -1,11 +1,11 @@
-const_local_path = '/Users/hecate/Downloads/BR/'
+const_local_path = './espnArticles/'
 
-start_page = int(140000)
-end_page = int(10100000)
+start_page = int(500)
+end_page = int(38200500)
 
 local_path = const_local_path + str(start_page) + '_to_' + str(end_page) + '/'
 
-thread_num = int(1000)
+thread_num = int(300)
 
 def check_progress():
     workload = int((end_page - start_page) / thread_num)
