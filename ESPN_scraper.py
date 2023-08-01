@@ -6,25 +6,35 @@ from threading import Thread
 from fake_useragent import UserAgent
 
 # article site url
-url = 'https://theathletic.com/'
+url = 'https://www.espn.com/soccer/insider/story/_/id/'
 
 # save directory
-const_local_path = '/Users/hecate/Downloads/BR/'
+const_local_path = '/Users/hecate/Downloads/espn/'
+
+# save_name
+txt_name = 'espn_'
 
 # scrape span
-start_page = int(100)
-end_page = int(200)
+start_page = int(500)
+end_page = int(5000)
 
 # thread number
 # (end - start) is preferably a multiple of thread number
 thread_num = int(100)
 
+login_url = 'https://registerdisney.go.com/jgc/v8/client/ESPN-ONESITE.WEB-PROD/guest/login?langPref=en-US&feature=no-password-reuse'
 
-# please return '404' or 'error' for unwanted pages 
+data = {
+  "loginValue": "dicksiekeylen1226@zohomail.com",
+  "password": "Xintiao1401"
+}
+
+
+
+# please return '404' or 'error' for unwanted pages
 def get_content(page_num):
-    url = f'https://www.espn.com/soccer/insider/story/_/id/{page_num}'
-    time.sleep(0.1)
-    response = requests.get(url)
+    my_url = url + str(page_num)
+    response = sess.get(my_url)
     soup = BeautifulSoup(response.text, 'html.parser')
     art = soup.find('div', class_='article-body')
     if art == None:
@@ -83,7 +93,7 @@ def scraper(start, end):
             break
 
         content = get_content(now)
-        save_as_txt('BR_' + str(now), content)
+        save_as_txt(txt_name + str(now), content)
         save_log(start, end, now)
         now = now + 1
 
@@ -112,6 +122,13 @@ if __name__ == '__main__':
 
     rst = 1
 
+    ua = UserAgent()
+    random_ua = ua.random
+    header = {'User-Agent': random_ua}
+    sess = requests.session()
+
+    sess.post(login_url, data=data, headers=header)
+
     while True:
         my_count = 0
         print('in round:' + str(my_count))
@@ -130,12 +147,3 @@ if __name__ == '__main__':
             print("restarting...")
             time.sleep(3)
             pass
-
-
-
-import requests
-from bs4 import BeautifulSoup
-import time
-from fake_useragent import UserAgent
-ua = UserAgent()
-
