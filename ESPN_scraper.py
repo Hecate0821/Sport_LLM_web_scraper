@@ -15,7 +15,7 @@ const_local_path = './espnArticles/'
 txt_name = 'espn_'
 
 # scrape span
-start_page = int(500)
+start_page = int(1000)
 end_page = int(38200000)
 
 # thread number
