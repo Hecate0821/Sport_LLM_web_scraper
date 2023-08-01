@@ -9,18 +9,18 @@ from fake_useragent import UserAgent
 url = 'https://www.espn.com/soccer/insider/story/_/id/'
 
 # save directory
-const_local_path = '/Users/hecate/Downloads/espn/'
+const_local_path = './espnArticles/'
 
 # save_name
 txt_name = 'espn_'
 
 # scrape span
 start_page = int(500)
-end_page = int(5000)
+end_page = int(38200000)
 
 # thread number
 # (end - start) is preferably a multiple of thread number
-thread_num = int(100)
+thread_num = int(500)
 
 login_url = 'https://registerdisney.go.com/jgc/v8/client/ESPN-ONESITE.WEB-PROD/guest/login?langPref=en-US&feature=no-password-reuse'
 
