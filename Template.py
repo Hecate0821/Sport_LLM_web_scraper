@@ -15,6 +15,9 @@ const_local_path = '/Users/hecate/Downloads/BR/'
 start_page = int(100)
 end_page = int(200)
 
+# save name
+txt_name = 'example_'
+
 # thread number
 # (end - start) is preferably a multiple of thread number
 thread_num = int(100)
@@ -81,7 +84,7 @@ def scraper(start, end):
             break
 
         content = get_content(now)
-        save_as_txt('BR_' + str(now), content)
+        save_as_txt(save_name + str(now), content)
         save_log(start, end, now)
         now = now + 1
 
