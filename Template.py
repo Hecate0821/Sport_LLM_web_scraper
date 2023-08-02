@@ -84,7 +84,7 @@ def scraper(start, end):
             break
 
         content = get_content(now)
-        save_as_txt(save_name + str(now), content)
+        save_as_txt(txt_name + str(now), content)
         save_log(start, end, now)
         now = now + 1
 
