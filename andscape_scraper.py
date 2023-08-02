@@ -9,9 +9,9 @@ import joblib
 
 # article site url
 
-article_link_list = joblib.load('/Users/chris/Downloads/andscape_link_list')
+article_link_list = joblib.load('./andscape_link_list')
 # save directory
-const_local_path = '/Users/chris/Documents/andscape/'
+const_local_path = './andscapeArticles/'
 
 # scrape span
 start_page = int(0)
