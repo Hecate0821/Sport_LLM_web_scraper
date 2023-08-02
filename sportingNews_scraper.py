@@ -9,17 +9,20 @@ import joblib
 # article site url
 
 # save directory
-const_local_path = '/Users/chris/Documents/sportingNews_generalsports/'
+const_local_path = './sportingNews_generalsports/'
 
 # scrape span
 start_page = int(0)
 end_page = int(218924)
 
+# txt name
+txt_name = 'sN_general_'
+
 # thread number
 # (end - start) is preferably a multiple of thread number
 thread_num = int(100)
 
-article_link_list = joblib.load('/Users/chris/Downloads/sporting_news_link')
+article_link_list = joblib.load('./sporting_news_link')
 
 def get_sportingnews(page_num):
     url = article_link_list[page_num]
@@ -93,7 +96,7 @@ def scraper(start, end):
             break
 
         content = get_sportingnews(now)
-        save_as_txt('sportingNews_' + str(now), content)
+        save_as_txt(txt_name + str(now), content)
         save_log(start, end, now)
         now = now + 1
 
