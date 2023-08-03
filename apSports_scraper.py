@@ -9,13 +9,13 @@ import joblib
 
 # article site url
 
-article_link_list = joblib.load('/Users/chris/Downloads/fosports_article_list')
+article_link_list = joblib.load('./fosports_article_list')
 # save directory
-const_local_path = '/Users/chris/Documents/fosports/'
+const_local_path = './fosports/'
 
 # scrape span
 start_page = int(0)
-end_page = int(12082)
+end_page = int(12100)
 
 # save name
 txt_name = 'frontoffice_'
