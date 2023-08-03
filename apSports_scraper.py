@@ -9,7 +9,7 @@ import joblib
 
 # article site url
 
-article_link_list = joblib.load('./fosports_article_list')
+article_link_list = joblib.load('./ap_sports_link')
 # save directory
 const_local_path = './fosports/'
 
