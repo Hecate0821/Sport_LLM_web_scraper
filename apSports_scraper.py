@@ -11,14 +11,14 @@ import joblib
 
 article_link_list = joblib.load('./ap_sports_link')
 # save directory
-const_local_path = './fosports/'
+const_local_path = './apsports/'
 
 # scrape span
 start_page = int(0)
 end_page = int(12100)
 
 # save name
-txt_name = 'frontoffice_'
+txt_name = 'apsports_'
 
 # thread number
 # (end - start) is preferably a multiple of thread number
