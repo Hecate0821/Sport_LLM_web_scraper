@@ -39,7 +39,7 @@ def get_apsports(page_num):
         return 'error'
 
     if art is None:
-        print('art is NONE in :' + page_num)
+        print('art is NONE in :' + str(page_num))
         return 'error'
     else:
         lines = art.text.strip().split('\n')
