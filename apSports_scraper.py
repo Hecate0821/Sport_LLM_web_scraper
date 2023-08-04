@@ -37,7 +37,7 @@ def get_apsports(page_num):
     except:
         return 'error'
     
-    if art == 'None':
+    if art is None:
         print('art is NONE\n\n\n\n')
         return 'error'
     else:
