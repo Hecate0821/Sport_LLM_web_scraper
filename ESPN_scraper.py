@@ -4,6 +4,7 @@ import time
 import os
 from threading import Thread
 from fake_useragent import UserAgent
+import argparse
 
 # article site url
 url = 'https://www.espn.com/soccer/insider/story/_/id/'
@@ -120,6 +121,15 @@ if __name__ == '__main__':
     if not os.path.exists(log_path):
         os.mkdir(log_path)
 
+    parser = argparse.ArgumentParser()
+
+    parser.add_argument("--p", default=False, help='display progress', action="store_true")
+
+    args = parser.parse_args()
+
+    if args.p:
+        check_progress()
+    
     rst = 1
 
     ua = UserAgent()
