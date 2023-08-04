@@ -36,6 +36,7 @@ def get_apsports(page_num):
         if art == 'None':
             return 'error'
         else:
+            '''
             lines = art.text.strip().split('\n')
             lines = [line for line in lines if line.strip() != '' and 'Flipboard' not in line and 'Published' not in line and 'Copy' not in line and 'Link copied' not in line and 'Reddit' not in line and 'Share' not in line and 'Other news' not in line and 'Pinterest' not in line and 'Print' not in line]
             paragraph = '\n'.join(lines)
@@ -48,6 +49,8 @@ def get_apsports(page_num):
                     return paragraph
             else:
                 return paragraph
+            '''
+            return art.text
     except:
         return 'error'
 
