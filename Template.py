@@ -4,7 +4,8 @@ import time
 import os
 from threading import Thread
 from fake_useragent import UserAgent
-import sys
+import argparse
+
 
 # article site url
 url = 'https://theathletic.com/'
@@ -133,7 +134,13 @@ if __name__ == '__main__':
 
     rst = 1
 
-    if sys.argv[1] == '-p':
+    parser = argparse.ArgumentParser()
+
+    parser.add_argument("--p", default=False, help='display progress')
+
+    args = parser.parse_args()
+
+    if args.p:
         check_progress()
 
     else:
