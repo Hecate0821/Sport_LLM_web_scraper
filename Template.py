@@ -133,7 +133,7 @@ if __name__ == '__main__':
 
     rst = 1
 
-    if sys.argv[1] == 'p':
+    if sys.argv[1] == '-p':
         check_progress()
 
     else:
