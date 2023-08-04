@@ -29,8 +29,19 @@ thread_num = int(100)
 # please return '404' or 'error' for unwanted pages 
 def get_apsports(page_num):
     url = ap_sports_link[page_num]
+
     response = requests.get(url)
     soup = BeautifulSoup(response.text, 'html.parser')
+
+    while True:
+        if 'Too Many Requests' in soup.text:
+            time.sleep(10)
+            response = requests.get(url)
+            soup = BeautifulSoup(response.text, 'html.parser')
+
+        else:
+            pass
+    
 
     try:
         art = soup.find('div',class_="Page-content")
@@ -39,8 +50,6 @@ def get_apsports(page_num):
         return 'error'
 
     if art is None:
-        print('art is NONE in :' + str(page_num))
-        save_as_txt('none' + str(page_num) + '_', soup.text)
         return 'error'
     else:
         lines = art.text.strip().split('\n')
