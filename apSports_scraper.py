@@ -9,16 +9,16 @@ import joblib
 
 # article site url
 
-article_link_list = joblib.load('./ap_sports_link')
+ap_sports_link = joblib.load('/Users/chris/Downloads/ap_sports_link')
 # save directory
-const_local_path = './apsports/'
+const_local_path = '/Users/chris/Documents/apsports_generalsports/'
 
 # scrape span
 start_page = int(0)
-end_page = int(12100)
+end_page = int(135819)
 
 # save name
-txt_name = 'apsports_'
+txt_name = 'apSports_'
 
 # thread number
 # (end - start) is preferably a multiple of thread number
@@ -26,32 +26,28 @@ thread_num = int(100)
 
 
 # please return '404' or 'error' for unwanted pages 
-def get_frontoffice(page_num):
-    url = article_link_list[page_num]
+def get_apsports(page_num):
+    url = ap_sports_link[page_num]
+    response = requests.get(url)
+    soup = BeautifulSoup(response.text, 'html.parser')
     try:
-        response = requests.get(url)
-        soup = BeautifulSoup(response.text, 'html.parser')
-        art = soup.find('div',class_="col-desk-9 col-tab-9 col-mob-4")
-        if art == None:
+        art = soup.find('div',class_="Page-content")
+        if art == 'None':
             return 'error'
-        lines = art.text.strip().split('\n')
-        lines = [line for line in lines if line.strip() != '' and 'URL copied to clipboard' not in line and 'Share' not in line and 'Facebook' not in line and 'Twitter' not in line and 'Linkedin' not in line and 'Email' not in line and 'Copy Link' not in line]
-        paragraph = '\n'.join(lines)
-        if 'Careers in Sports' in paragraph:
-            paragraph = paragraph.split('Careers in Sports')[0]
-            if paragraph != None:
-                return paragraph
-            else:
-                return 'error'
         else:
-            if paragraph != None:
-                return paragraph
+            lines = art.text.strip().split('\n')
+            lines = [line for line in lines if line.strip() != '' and 'Flipboard' not in line and 'Published' not in line and 'Copy' not in line and 'Link copied' not in line and 'Reddit' not in line and 'Share' not in line and 'Other news' not in line and 'Pinterest' not in line and 'Print' not in line]
+            paragraph = '\n'.join(lines)
+            if 'window._taboola' in paragraph:
+                paragraph = paragraph.split('window._taboola')[0]
+                if '___' in paragraph:
+                    paragraph = paragraph.split('___')[0]
+                    return paragraph
+                else:
+                    return paragraph
             else:
-                return 'error'
-
-
+                return paragraph
     except:
-        
         return 'error'
 
 
@@ -103,7 +99,7 @@ def scraper(start, end):
         if now > end:
             break
 
-        content = get_frontoffice(now)
+        content = get_apsports(now)
         save_as_txt(txt_name + str(now), content)
         save_log(start, end, now)
         now = now + 1
