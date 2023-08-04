@@ -23,6 +23,9 @@ end_page = int(38200500)
 # (end - start) is preferably a multiple of thread number
 thread_num = int(500)
 
+# least
+least_size = int(100)
+
 login_url = 'https://registerdisney.go.com/jgc/v8/client/ESPN-ONESITE.WEB-PROD/guest/login?langPref=en-US&feature=no-password-reuse'
 
 data = {
@@ -39,7 +42,7 @@ def get_content(page_num):
     soup = BeautifulSoup(response.text, 'html.parser')
     art = soup.find('div', class_='article-body')
     if art == None:
-        return 'Error'
+        return soup.text
     else:
         article = art.text
         return article
@@ -102,6 +105,12 @@ def scraper(start, end):
 def save_as_txt(file_name, file_content):
     if (file_content[0:5] != 'Error') and (file_content[0:5] != 'error') and (file_content[0:3] != '404'):
         # encode is needed on windows
+        if len(file_content) < least_size:
+            error_path = 'sizeunder' + str(least_size) + '/'
+            if not os.path.exists(local_path + error_path):
+                os.mkdir(local_path + error_path)
+            f = open(local_path + error_path + file_name + '.txt', 'w', encoding='UTF-8')
+            f.write(file_content)
         f = open(local_path + file_name + '.txt', 'w', encoding='UTF-8')
         f.write(file_content)
         f.close()
