@@ -40,7 +40,7 @@ def get_apsports(page_num):
             soup = BeautifulSoup(response.text, 'html.parser')
 
         else:
-            pass
+            break
     
 
     try:
