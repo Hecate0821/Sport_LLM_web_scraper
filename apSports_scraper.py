@@ -111,7 +111,7 @@ def scraper(start, end):
 
 
 def save_as_txt(file_name, file_content):
-    if (file_content[0:5] != 'Error') and (file_content[0:5] != 'error') and (file_content[0:3] != '404'):
+    if not file_content == 'Error':
         # encode is needed on windows
         f = open(local_path + file_name + '.txt', 'w', encoding='UTF-8')
         f.write(file_content)
