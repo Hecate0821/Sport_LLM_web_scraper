@@ -16,7 +16,7 @@ const_local_path = './apsports_generalsports/'
 
 # scrape span
 start_page = int(0)
-end_page = int(100)
+end_page = int(200)
 
 # save name
 txt_name = 'apSports_'
