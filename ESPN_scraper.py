@@ -40,6 +40,15 @@ def get_content(page_num):
     my_url = url + str(page_num)
     response = sess.get(my_url)
     soup = BeautifulSoup(response.text, 'html.parser')
+    while True:
+        if 'ESPN Page error' in soup.text:
+            time.sleep(10)
+            response = sess.get(url)
+            soup = BeautifulSoup(response.text, 'html.parser')
+
+        else:
+            break
+    
     art = soup.find('div', class_='article-body')
     if art == None:
         return soup.text
