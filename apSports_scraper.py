@@ -9,13 +9,13 @@ import joblib
 
 # article site url
 
-ap_sports_link = joblib.load('/Users/chris/Downloads/ap_sports_link')
+ap_sports_link = joblib.load(' ./ap_sports_link')
 # save directory
-const_local_path = '/Users/chris/Documents/apsports_generalsports/'
+const_local_path = './apsports_generalsports/'
 
 # scrape span
 start_page = int(0)
-end_page = int(135819)
+end_page = int(10000)
 
 # save name
 txt_name = 'apSports_'
@@ -116,6 +116,25 @@ def save_as_txt(file_name, file_content):
         pass
 
 
+def check_progress():
+    workload = int((end_page - start_page) / thread_num)
+
+    for i in range(1, thread_num + 1):
+        log_path = local_path + 'log/'
+
+        filename = log_path + 'log_' + str(start_page + (i - 1) * workload) + '_' + str(
+            start_page + i * workload) + '.txt'
+
+        f = open(filename, 'r')
+
+        now = int(f.readline().rstrip())
+
+        percentage = (int(now) - start_page - (i - 1) * workload) / workload * 100
+
+        print('Thread ' + str(i) + ': ' + str(now) + ' / ' + str(start_page + i * workload) + ' Progress: ' + str(
+            percentage) + '%')
+
+
 if __name__ == '__main__':
     local_path = const_local_path + str(start_page) + '_to_' + str(end_page) + '/'
 
@@ -129,21 +148,25 @@ if __name__ == '__main__':
 
     rst = 1
 
-    while True:
-        my_count = 0
-        print('in round:' + str(my_count))
-        my_count = my_count + 1
-        try:
-            rst = main()
-            if rst == 0:
+    if sys.argv[1] == '-p':
+        check_progress()
+
+    else:
+        while True:
+            my_count = 0
+            print('in round:' + str(my_count))
+            my_count = my_count + 1
+            try:
+                rst = main()
+                if rst == 0:
+                    break
+
+            except KeyboardInterrupt:
+                print('exit')
+                time.sleep(3)
                 break
 
-        except KeyboardInterrupt:
-            print('exit')
-            time.sleep(3)
-            break
-
-        except:
-            print("restarting...")
-            time.sleep(3)
-            pass
+            except:
+                print("restarting...")
+                time.sleep(3)
+                pass
