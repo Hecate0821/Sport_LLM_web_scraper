@@ -40,6 +40,7 @@ def get_apsports(page_num):
 
     if art is None:
         print('art is NONE in :' + str(page_num))
+        save_as_txt('none' + str(page_num) + '_', soup.text)
         return 'error'
     else:
         lines = art.text.strip().split('\n')
