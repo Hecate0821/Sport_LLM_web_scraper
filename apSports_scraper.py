@@ -16,7 +16,7 @@ const_local_path = './apsports_generalsports/'
 
 # scrape span
 start_page = int(0)
-end_page = int(1000)
+end_page = int(100)
 
 # save name
 txt_name = 'apSports_'
@@ -31,12 +31,13 @@ def get_apsports(page_num):
     url = ap_sports_link[page_num]
     response = requests.get(url)
     soup = BeautifulSoup(response.text, 'html.parser')
+
     try:
         art = soup.find('div',class_="Page-content")
 
     except:
         return 'error'
-    
+
     if art is None:
         print('art is NONE\n\n\n\n')
         return 'error'
