@@ -5,6 +5,7 @@ import os
 from threading import Thread
 from fake_useragent import UserAgent
 import joblib
+import argparse
 
 
 # article site url
@@ -113,6 +114,25 @@ def save_as_txt(file_name, file_content):
         pass
 
 
+def check_progress():
+    workload = int((end_page - start_page) / thread_num)
+
+    for i in range(1, thread_num + 1):
+        log_path = local_path + 'log/'
+
+        filename = log_path + 'log_' + str(start_page + (i - 1) * workload) + '_' + str(
+            start_page + i * workload) + '.txt'
+
+        f = open(filename, 'r')
+
+        now = int(f.readline().rstrip())
+
+        percentage = (int(now) - start_page - (i - 1) * workload) / workload * 100
+
+        print('Thread ' + str(i) + ': ' + str(now) + ' / ' + str(start_page + i * workload) + ' Progress: ' + str(
+            percentage) + '%')
+
+
 if __name__ == '__main__':
     local_path = const_local_path + str(start_page) + '_to_' + str(end_page) + '/'
 
@@ -126,21 +146,31 @@ if __name__ == '__main__':
 
     rst = 1
 
-    while True:
-        my_count = 0
-        print('in round:' + str(my_count))
-        my_count = my_count + 1
-        try:
-            rst = main()
-            if rst == 0:
+    parser = argparse.ArgumentParser()
+
+    parser.add_argument("--p", default=False, help='display progress', action="store_true")
+
+    args = parser.parse_args()
+
+    if args.p:
+        check_progress()
+
+    else:
+        while True:
+            my_count = 0
+            print('in round:' + str(my_count))
+            my_count = my_count + 1
+            try:
+                rst = main()
+                if rst == 0:
+                    break
+
+            except KeyboardInterrupt:
+                print('exit')
+                time.sleep(3)
                 break
 
-        except KeyboardInterrupt:
-            print('exit')
-            time.sleep(3)
-            break
-
-        except:
-            print("restarting...")
-            time.sleep(3)
-            pass
+            except:
+                print("restarting...")
+                time.sleep(3)
+                pass
