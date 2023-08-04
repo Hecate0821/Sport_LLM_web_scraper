@@ -136,7 +136,7 @@ if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
 
-    parser.add_argument("--p", default=False, help='display progress')
+    parser.add_argument("--p", default=False, help='display progress', action="store_true")
 
     args = parser.parse_args()
 
