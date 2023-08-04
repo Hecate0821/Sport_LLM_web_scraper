@@ -5,6 +5,5 @@ Scrapers for sports articles
 Template.py
 
 ## Checker
-progressChecker.py
-check progress in each thread
-change path and page virable before run
+to check progress:
+python3 scraper.py -p
