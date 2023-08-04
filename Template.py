@@ -98,6 +98,8 @@ def save_as_txt(file_name, file_content):
         # encode is needed on windows
         if len(file_content) < least_size:
             error_path = 'sizeunder' + str(least_size) + '/'
+            if not os.path.exists(local_path + error_path):
+                os.mkdir(local_path + error_path)
             f = open(local_path + error_path + file_name + '.txt', 'w', encoding='UTF-8')
             f.write(file_content)
         f = open(local_path + file_name + '.txt', 'w', encoding='UTF-8')
