@@ -33,26 +33,25 @@ def get_apsports(page_num):
     soup = BeautifulSoup(response.text, 'html.parser')
     try:
         art = soup.find('div',class_="Page-content")
-        if art == 'None':
-            return 'error'
-        else:
-            '''
-            lines = art.text.strip().split('\n')
-            lines = [line for line in lines if line.strip() != '' and 'Flipboard' not in line and 'Published' not in line and 'Copy' not in line and 'Link copied' not in line and 'Reddit' not in line and 'Share' not in line and 'Other news' not in line and 'Pinterest' not in line and 'Print' not in line]
-            paragraph = '\n'.join(lines)
-            if 'window._taboola' in paragraph:
-                paragraph = paragraph.split('window._taboola')[0]
-                if '___' in paragraph:
-                    paragraph = paragraph.split('___')[0]
-                    return paragraph
-                else:
-                    return paragraph
-            else:
-                return paragraph
-            '''
-            return art.text
+
     except:
         return 'error'
+    
+    if art == 'None':
+        return 'error'
+    else:
+        lines = art.text.strip().split('\n')
+        lines = [line for line in lines if line.strip() != '' and 'Flipboard' not in line and 'Published' not in line and 'Copy' not in line and 'Link copied' not in line and 'Reddit' not in line and 'Share' not in line and 'Other news' not in line and 'Pinterest' not in line and 'Print' not in line]
+        paragraph = '\n'.join(lines)
+        if 'window._taboola' in paragraph:
+            paragraph = paragraph.split('window._taboola')[0]
+            if '___' in paragraph:
+                paragraph = paragraph.split('___')[0]
+                return paragraph
+            else:
+                return paragraph
+        else:
+            return paragraph
 
 
 def save_log(start, end, now):
