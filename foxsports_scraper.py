@@ -10,13 +10,13 @@ import argparse
 
 # article site url
 
-article_link_list = joblib.load('/Users/chris/Downloads/fox_sports_link')
+article_link_list = joblib.load('./fox_sports_link')
 # save directory
-const_local_path = '/Users/chris/Documents/foxsports_generalsports/'
+const_local_path = './foxsports_generalsports/'
 
 # scrape span
 start_page = int(0)
-end_page = int(1232724)
+end_page = int(1232800)
 
 # save name
 txt_name = 'foxsports_'
