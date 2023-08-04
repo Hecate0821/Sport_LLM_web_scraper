@@ -6,4 +6,4 @@ Template.py
 
 ## Checker
 to check progress:
-python3 scraper.py -p
+python3 scraper.py --p
