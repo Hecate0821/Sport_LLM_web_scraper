@@ -145,6 +145,9 @@ def check_progress():
 
 
 if __name__ == '__main__':
+
+    if not os.path.exists(const_local_path):
+        os.mkdir(const_local_path)
     
     local_path = const_local_path + str(start_page) + '_to_' + str(end_page) + '/'
     if not os.path.exists(local_path):
