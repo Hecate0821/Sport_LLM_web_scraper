@@ -42,6 +42,9 @@ def get_content(page_num):
     soup = BeautifulSoup(response.text, 'html.parser')
     while True:
         if 'ESPN Page error' in soup.text:
+            return 'error'
+          
+        if '403 ERROR' in soup.text:
             time.sleep(10)
             response = sess.get(url)
             soup = BeautifulSoup(response.text, 'html.parser')
