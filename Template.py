@@ -96,8 +96,8 @@ def scraper(start, end):
 def save_as_txt(file_name, file_content):
     if (file_content[0:5] != 'Error') and (file_content[0:5] != 'error') and (file_content[0:3] != '404'):
         # encode is needed on windows
-        if len(file_content) < least_size:
-            error_path = 'sizeunder' + str(least_size) + '/'
+        if len(file_content) < least_size or 'error' in file_content or 'Error' in file_content:
+            error_path = 'sizeunder' + str(least_size) '_orError' + '/'
             if not os.path.exists(local_path + error_path):
                 os.mkdir(local_path + error_path)
             f = open(local_path + error_path + file_name + '.txt', 'w', encoding='UTF-8')
