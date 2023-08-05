@@ -35,7 +35,11 @@ def get_content(page_num):
     headers = {'User-Agent': random_ua}
     response = requests.get(my_url, headers=headers)
     content = BeautifulSoup(response.text, 'html.parser')
+    if ('error' or 'Error') in content.text:
+        return content.txt
 
+    # put your code below:
+        
     return content.get_text()
 
 
