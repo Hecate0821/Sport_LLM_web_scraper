@@ -162,8 +162,6 @@ if __name__ == '__main__':
     if not os.path.exists(local_path + error_path):
                 os.mkdir(local_path + error_path)
 
-    rst = 1
-
     parser = argparse.ArgumentParser()
 
     parser.add_argument("--p", default=False, help='display progress', action="store_true")
@@ -173,22 +171,4 @@ if __name__ == '__main__':
     if args.p:
         check_progress()
 
-    else:
-        while True:
-            my_count = 0
-            print('in round:' + str(my_count))
-            my_count = my_count + 1
-            try:
-                rst = main()
-                if rst == 0:
-                    break
-
-            except KeyboardInterrupt:
-                print('exit')
-                time.sleep(3)
-                break
-
-            except:
-                print("restarting...")
-                time.sleep(3)
-                pass
+    main()
