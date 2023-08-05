@@ -35,7 +35,7 @@ error_massage = {
     'Error',
 }
 
-# please return '404' or 'error' for unwanted pages
+# put your code here
 def get_content(page_num):
     my_url = url + str(page_num)
     ua = UserAgent()
