@@ -27,6 +27,14 @@ thread_num = int(100)
 # file least size
 least_size = int(100)
 
+# error massage list, if in content.text, file would be put in error directory
+error_massage = {
+    '403',
+    '404',
+    'error',
+    'Error',
+}
+
 # please return '404' or 'error' for unwanted pages
 def get_content(page_num):
     my_url = url + str(page_num)
@@ -35,7 +43,9 @@ def get_content(page_num):
     headers = {'User-Agent': random_ua}
     response = requests.get(my_url, headers=headers)
     content = BeautifulSoup(response.text, 'html.parser')
-    if ('error' or 'Error') in content.text:
+    content_text = content.text
+    
+    if any(word if word in content_text else False for word in error_massage)
         return content.txt
 
     # put your code below:
@@ -98,19 +108,20 @@ def scraper(start, end):
 
 
 def save_as_txt(file_name, file_content):
-    if (file_content[0:5] != 'Error') and (file_content[0:5] != 'error') and (file_content[0:3] != '404'):
+    if not any(word if word in file_content else False for word in error_massage):
         # encode is needed on windows
-        if len(file_content) < least_size or 'error' in file_content or 'Error' in file_content:
-            error_path = 'sizeunder' + str(least_size) '_orError' + '/'
-            if not os.path.exists(local_path + error_path):
-                os.mkdir(local_path + error_path)
-            f = open(local_path + error_path + file_name + '.txt', 'w', encoding='UTF-8')
+        if len(file_content) < least_size:
+            f = open(local_path + least_path + file_name + '.txt', 'w', encoding='UTF-8')
             f.write(file_content)
+            f.close()
         f = open(local_path + file_name + '.txt', 'w', encoding='UTF-8')
         f.write(file_content)
         f.close()
 
     else:
+        f = open(local_path + error_path + file_name + '.txt', 'w', encoding='UTF-8')
+        f.write(file_content)
+        f.close()
         pass
 
 
@@ -134,15 +145,22 @@ def check_progress():
 
 
 if __name__ == '__main__':
+    
     local_path = const_local_path + str(start_page) + '_to_' + str(end_page) + '/'
-
     if not os.path.exists(local_path):
         os.mkdir(local_path)
 
     log_path = local_path + 'log/'
-
     if not os.path.exists(log_path):
         os.mkdir(log_path)
+
+    least_path = 'sizeunder' + str(least_size) + '/'
+    if not os.path.exists(local_path + least_path):
+                os.mkdir(local_path + least_path)
+
+    error_path = 'error_txt/'
+    if not os.path.exists(local_path + error_path):
+                os.mkdir(local_path + error_path)
 
     rst = 1
 
