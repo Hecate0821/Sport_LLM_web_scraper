@@ -4,36 +4,52 @@ import time
 import os
 from threading import Thread
 from fake_useragent import UserAgent
-import joblib
 import argparse
-
+import joblib
 
 # article site url
+url = 'https://theathletic.com/'
 
-ap_sports_link = joblib.load('./ap_sports_link')
 # save directory
-const_local_path = './apsports_generalsports/'
+const_local_path = './Articles/'
 
 # scrape span
-start_page = int(0)
-end_page = int(135900)
+start_page = int(100)
+end_page = int(200)
 
 # save name
-txt_name = 'apSports_'
+txt_name = 'example_'
 
 # thread number
 # (end - start) is preferably a multiple of thread number
 thread_num = int(100)
 
+# file least size
+least_size = int(100)
 
-# please return '404' or 'error' for unwanted pages 
-def get_apsports(page_num):
-    url = ap_sports_link[page_num]
+# error massage list, if in content.text, file would be put in error directory
+error_massage = {
+    '403',
+    '404',
+    'error',
+    'Error',
+}
 
-    response = requests.get(url)
+  
+# put your code here
+def get_content(page_num):
+    my_url = url + str(page_num)
+    ua = UserAgent()
+    random_ua = ua.random
+    headers = {'User-Agent': random_ua}
+    response = requests.get(my_url, headers=headers)
     soup = BeautifulSoup(response.text, 'html.parser')
+    content_text = soup.text
+    
+    if any(word if word in content_text else False for word in error_massage):
+        return content_text
 
-    while True:
+      while True:
         if 'Too Many Requests' in soup.text:
             time.sleep(10)
             response = requests.get(url)
@@ -114,22 +130,27 @@ def scraper(start, end):
         if now > end:
             break
 
-        content = get_apsports(now)
+        content = get_content(now)
         save_as_txt(txt_name + str(now), content)
         save_log(start, end, now)
         now = now + 1
 
 
 def save_as_txt(file_name, file_content):
-    if (file_content[0:5] != 'Error') and (file_content[0:5] != 'error') and (file_content[0:3] != '404'):
-        if file_content[0:3] == '404':
-            print('404!!!!!!!\n\n\n\n')
+    if not any(word if word in file_content else False for word in error_massage):
         # encode is needed on windows
+        if len(file_content) < least_size:
+            f = open(local_path + least_path + file_name + '.txt', 'w', encoding='UTF-8')
+            f.write(file_content)
+            f.close()
         f = open(local_path + file_name + '.txt', 'w', encoding='UTF-8')
         f.write(file_content)
         f.close()
 
     else:
+        f = open(local_path + error_path + file_name + '.txt', 'w', encoding='UTF-8')
+        f.write(file_content)
+        f.close()
         pass
 
 
@@ -152,41 +173,30 @@ def check_progress():
             percentage) + '%')
 
 
-def check_progress():
-    workload = int((end_page - start_page) / thread_num)
-
-    for i in range(1, thread_num + 1):
-        log_path = local_path + 'log/'
-
-        filename = log_path + 'log_' + str(start_page + (i - 1) * workload) + '_' + str(
-            start_page + i * workload) + '.txt'
-
-        f = open(filename, 'r')
-
-        now = int(f.readline().rstrip())
-
-        percentage = (int(now) - start_page - (i - 1) * workload) / workload * 100
-
-        print('Thread ' + str(i) + ': ' + str(now) + ' / ' + str(start_page + i * workload) + ' Progress: ' + str(
-            percentage) + '%')
-
-
 if __name__ == '__main__':
-    local_path = const_local_path + str(start_page) + '_to_' + str(end_page) + '/'
 
+    if not os.path.exists(const_local_path):
+        os.mkdir(const_local_path)
+    
+    local_path = const_local_path + str(start_page) + '_to_' + str(end_page) + '/'
     if not os.path.exists(local_path):
         os.mkdir(local_path)
 
     log_path = local_path + 'log/'
-
     if not os.path.exists(log_path):
         os.mkdir(log_path)
 
-    rst = 1
+    least_path = 'sizeunder' + str(least_size) + '/'
+    if not os.path.exists(local_path + least_path):
+                os.mkdir(local_path + least_path)
+
+    error_path = 'error_txt/'
+    if not os.path.exists(local_path + error_path):
+                os.mkdir(local_path + error_path)
 
     parser = argparse.ArgumentParser()
 
-    parser.add_argument("--p", default=False, help='display progress', action="store_true")
+    parser.add_argument("-p", default=False, help='display progress', action="store_true")
 
     args = parser.parse_args()
 
@@ -194,21 +204,8 @@ if __name__ == '__main__':
         check_progress()
 
     else:
-        while True:
-            my_count = 0
-            print('in round:' + str(my_count))
-            my_count = my_count + 1
-            try:
-                rst = main()
-                if rst == 0:
-                    break
+        main()
 
-            except KeyboardInterrupt:
-                print('exit')
-                time.sleep(3)
-                break
 
-            except:
-                print("restarting...")
-                time.sleep(3)
-                pass
+
+
