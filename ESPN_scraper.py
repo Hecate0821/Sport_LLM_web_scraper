@@ -38,7 +38,7 @@ data = {
 # please return '404' or 'error' for unwanted pages
 def get_content(page_num):
     my_url = url + str(page_num)
-    response = sess.get(my_url)
+    response = request.get(my_url)
     soup = BeautifulSoup(response.text, 'html.parser')
     while True:
         if 'ESPN Page error' in soup.text:
@@ -151,38 +151,15 @@ def check_progress():
 
 
 if __name__ == '__main__':
-    local_path = const_local_path + str(start_page) + '_to_' + str(end_page) + '/'
-
-    if not os.path.exists(local_path):
-        os.mkdir(local_path)
-
-    log_path = local_path + 'log/'
-
-    if not os.path.exists(log_path):
-        os.mkdir(log_path)
-
-    parser = argparse.ArgumentParser()
-
-    parser.add_argument("--p", default=False, help='display progress', action="store_true")
-
-    args = parser.parse_args()
-
-    if args.p:
-        check_progress()
     
-    rst = 1
-
-
-
-if __name__ == '__main__':
     # cmd
     parser = argparse.ArgumentParser()
 
     parser.add_argument("-p", default=False, help='display progress', action="store_true")
 
-    parser.add_argument("start_page", default=-1, help='set start page', type=int)
+    parser.add_argument("start_page", default=0, help='set start page', type=int)
 
-    parser.add_argument("end_page", default=-1, help='set end page', type=int)
+    parser.add_argument("end_page", default=0, help='set end page', type=int)
 
     parser.add_argument("-t", default=100, help='set threads number', type=int)
 
@@ -220,15 +197,10 @@ if __name__ == '__main__':
     if not os.path.exists(local_path + error_path):
                 os.mkdir(local_path + error_path)
 
-    ua = UserAgent()
-    random_ua = ua.random
-    header = {'User-Agent': random_ua}
-    sess = requests.session()
-
-    sess.post(login_url, data=data, headers=header)
-  
     if args.p:
         check_progress()
 
     else:
-        main()
+
+      print('entering main')
+      main()
