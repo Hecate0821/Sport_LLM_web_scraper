@@ -138,7 +138,6 @@ def scraper(start, end):
 def save_as_txt(file_name, file_content):
     if not any(word if word in file_content else False for word in error_massage):
         # encode is needed on windows
-        print(str(file_name) + ': ' + file_content + '\n len: ' + str(len(file_content)))
         if len(file_content) < least_size:
             f = open(local_path + least_path + file_name + '.txt', 'w', encoding='UTF-8')
             f.write(file_content)
@@ -198,7 +197,19 @@ if __name__ == '__main__':
 
     parser.add_argument("-p", default=False, help='display progress', action="store_true")
 
+    parser.add_argument("-s", default=-1, help='set start page', typr=int)
+
+    parser.add_argument("-e", default=-1, help='set end page', typr=int)
+    
+    
     args = parser.parse_args()
+
+    if args.s != -1:
+        start_page = args.s
+
+    if args.e != -1:
+        start_page = args.e
+    
 
     if args.p:
         check_progress()
