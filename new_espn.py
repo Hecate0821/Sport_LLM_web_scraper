@@ -6,34 +6,25 @@ from threading import Thread
 from fake_useragent import UserAgent
 import argparse
 
-
 # article site url
 url = 'https://www.espn.com/soccer/insider/story/_/id/'
 
 # save directory
-const_local_path = './espn/'
+const_local_path = './espnArticles/'
+
+# save_name
+txt_name = 'espn_'
 
 # scrape span
-start_page = int(100)
-end_page = int(200)
-
-# save name
-txt_name = 'espn_'
+start_page = int(500)
+end_page = int(38200500)
 
 # thread number
 # (end - start) is preferably a multiple of thread number
-thread_num = int(100)
+thread_num = int(500)
 
-# file least size
+# least
 least_size = int(100)
-
-# error massage list, if in content.text, file would be put in error directory
-error_massage = {
-    '403',
-    '404',
-    'error',
-    'Error',
-}
 
 login_url = 'https://registerdisney.go.com/jgc/v8/client/ESPN-ONESITE.WEB-PROD/guest/login?langPref=en-US&feature=no-password-reuse'
 
@@ -124,22 +115,20 @@ def scraper(start, end):
 
 
 def save_as_txt(file_name, file_content):
-    if not any(word if word in file_content else False for word in error_massage):
+    if (file_content[0:5] != 'Error') and (file_content[0:5] != 'error') and (file_content[0:3] != '404'):
         # encode is needed on windows
         if len(file_content) < least_size:
-            f = open(local_path + least_path + file_name + '.txt', 'w', encoding='UTF-8')
+            error_path = 'sizeunder' + str(least_size) + '/'
+            if not os.path.exists(local_path + error_path):
+                os.mkdir(local_path + error_path)
+            f = open(local_path + error_path + file_name + '.txt', 'w', encoding='UTF-8')
             f.write(file_content)
-            f.close()
         f = open(local_path + file_name + '.txt', 'w', encoding='UTF-8')
         f.write(file_content)
         f.close()
 
     else:
-        f = open(local_path + error_path + file_name + '.txt', 'w', encoding='UTF-8')
-        f.write(file_content)
-        f.close()
         pass
-
 
 def check_progress():
     workload = int((end_page - start_page) / thread_num)
@@ -160,8 +149,32 @@ def check_progress():
             percentage) + '%')
 
 
+
 if __name__ == '__main__':
+    local_path = const_local_path + str(start_page) + '_to_' + str(end_page) + '/'
+
+    if not os.path.exists(local_path):
+        os.mkdir(local_path)
+
+    log_path = local_path + 'log/'
+
+    if not os.path.exists(log_path):
+        os.mkdir(log_path)
+
+    parser = argparse.ArgumentParser()
+
+    parser.add_argument("--p", default=False, help='display progress', action="store_true")
+
+    args = parser.parse_args()
+
+    if args.p:
+        check_progress()
     
+    rst = 1
+
+
+
+if __name__ == '__main__':
     # cmd
     parser = argparse.ArgumentParser()
 
@@ -207,16 +220,15 @@ if __name__ == '__main__':
     if not os.path.exists(local_path + error_path):
                 os.mkdir(local_path + error_path)
 
-
-
     ua = UserAgent()
     random_ua = ua.random
     header = {'User-Agent': random_ua}
     sess = requests.session()
 
     sess.post(login_url, data=data, headers=header)
-    
+  
     if args.p:
         check_progress()
+
     else:
         main()
