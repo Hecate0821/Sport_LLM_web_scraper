@@ -36,7 +36,7 @@ error_massage = {
   
 # put your code here
 def get_content(page_num):
-    my_url = url + str(page_num)
+    my_url = ap_sports_link[page_num]
     ua = UserAgent()
     random_ua = ua.random
     headers = {'User-Agent': random_ua}
