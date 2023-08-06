@@ -36,11 +36,11 @@ error_massage = {
   
 # put your code here
 def get_content(page_num):
-    my_url = ap_sports_link[page_num]
+    url = ap_sports_link[page_num]
     ua = UserAgent()
     random_ua = ua.random
     headers = {'User-Agent': random_ua}
-    response = requests.get(my_url, headers=headers)
+    response = requests.get(url, headers=headers)
     soup = BeautifulSoup(response.text, 'html.parser')
     content_text = soup.text
     
