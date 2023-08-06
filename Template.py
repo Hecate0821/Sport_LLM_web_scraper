@@ -145,7 +145,8 @@ def check_progress():
 
 
 if __name__ == '__main__':
-
+    
+    # cmd
     parser = argparse.ArgumentParser()
 
     parser.add_argument("-p", default=False, help='display progress', action="store_true")
@@ -154,22 +155,23 @@ if __name__ == '__main__':
 
     parser.add_argument("end_page", default=-1, help='set end page', type=int)
 
-    parser.add_argument("-t", default=-1, help='set threads number', type=int)
+    parser.add_argument("-t", default=100, help='set threads number', type=int)
 
-    parser.add_argument("-s", default=-1, help='set least size number', type=int)
-    
+    parser.add_argument("-s", default=100, help='set least size number', type=int)
     
     args = parser.parse_args()
 
+    # set page
     start_page = args.start_page
     end_page = args.end_page
 
-    if args.t != -1:
-        thread_num = args.t
+    #set thread
+    thread_num = args.t
 
-    if args.s != -1:
-        least_size = args.s
+    # set least size
+    least_size = args.s
 
+    # create dirs
     if not os.path.exists(const_local_path):
         os.mkdir(const_local_path)
     
