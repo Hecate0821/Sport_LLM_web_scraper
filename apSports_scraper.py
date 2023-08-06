@@ -7,18 +7,16 @@ from fake_useragent import UserAgent
 import argparse
 import joblib
 
-# article site url
-url = 'https://theathletic.com/'
-
+ap_sports_link = joblib.load('./ap_sports_link')
 # save directory
-const_local_path = './Articles/'
+const_local_path = './apsports_generalsports/'
 
 # scrape span
-start_page = int(100)
-end_page = int(200)
+start_page = int(0)
+end_page = int(1000)
 
 # save name
-txt_name = 'example_'
+txt_name = 'apSports_'
 
 # thread number
 # (end - start) is preferably a multiple of thread number
