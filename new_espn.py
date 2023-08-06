@@ -38,6 +38,7 @@ data = {
 # please return '404' or 'error' for unwanted pages
 def get_content(page_num):
     my_url = url + str(page_num)
+    print('getting: ' + my_url) 
     response = sess.get(my_url)
     soup = BeautifulSoup(response.text, 'html.parser')
     while True:
@@ -207,4 +208,6 @@ if __name__ == '__main__':
       sess = requests.session()
 
       sess.post(login_url, data=data, headers=header)
+
+      print('entering main')
       main()
