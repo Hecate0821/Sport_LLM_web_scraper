@@ -46,7 +46,7 @@ def get_content(page_num):
     
     if any(word if word in content_text else False for word in error_massage):
         error_page = url
-        return 'page: ' + errorpage + '\nlength: ' + str(len(content_text)) + '\n' + content_text
+        return 'page: ' + error_page + '\nlength: ' + str(len(content_text)) + '\n' + content_text
 
     while True:
         if 'Too Many Requests' in soup.text:
