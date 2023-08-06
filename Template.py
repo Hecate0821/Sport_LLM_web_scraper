@@ -151,9 +151,9 @@ if __name__ == '__main__':
 
     parser.add_argument("-p", default=False, help='display progress', action="store_true")
 
-    parser.add_argument("start_page", default=-1, help='set start page', type=int)
+    parser.add_argument("start_page", default=0, help='set start page', type=int)
 
-    parser.add_argument("end_page", default=-1, help='set end page', type=int)
+    parser.add_argument("end_page", default=0, help='set end page', type=int)
 
     parser.add_argument("-t", default=100, help='set threads number', type=int)
 
