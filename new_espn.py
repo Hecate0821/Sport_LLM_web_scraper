@@ -11,14 +11,14 @@ import argparse
 url = 'https://theathletic.com/'
 
 # save directory
-const_local_path = './Articles/'
+const_local_path = './espn/'
 
 # scrape span
 start_page = int(100)
 end_page = int(200)
 
 # save name
-txt_name = 'example_'
+txt_name = 'espn_'
 
 # thread number
 # (end - start) is preferably a multiple of thread number
