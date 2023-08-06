@@ -197,9 +197,9 @@ if __name__ == '__main__':
 
     parser.add_argument("-p", default=False, help='display progress', action="store_true")
 
-    parser.add_argument("-s", default=-1, help='set start page', typr=int)
+    parser.add_argument("-s", default=-1, help='set start page', type=int)
 
-    parser.add_argument("-e", default=-1, help='set end page', typr=int)
+    parser.add_argument("-e", default=-1, help='set end page', type=int)
     
     
     args = parser.parse_args()
