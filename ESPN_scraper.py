@@ -38,7 +38,10 @@ data = {
 # please return '404' or 'error' for unwanted pages
 def get_content(page_num):
     my_url = url + str(page_num)
-    response = request.get(my_url)
+    ua = UserAgent()
+    random_ua = ua.random
+    headers = {'User-Agent': random_ua}
+    response = requests.get(my_url, headers=headers)
     soup = BeautifulSoup(response.text, 'html.parser')
     while True:
         if 'ESPN Page error' in soup.text:
@@ -46,7 +49,7 @@ def get_content(page_num):
           
         if '403 ERROR' in soup.text:
             time.sleep(10)
-            response = sess.get(url)
+            response = request.get(my_url, headers=headers)
             soup = BeautifulSoup(response.text, 'html.parser')
 
         else:
