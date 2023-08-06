@@ -38,17 +38,13 @@ data = {
 # please return '404' or 'error' for unwanted pages
 def get_content(page_num):
     my_url = url + str(page_num)
-    print('getting: ' + my_url) 
     response = sess.get(my_url)
-    print('response from: ' + my_url)
     soup = BeautifulSoup(response.text, 'html.parser')
     while True:
         if 'ESPN Page error' in soup.text:
-            print('ESPN Page error')
             return 'error'
           
         if '403 ERROR' in soup.text:
-            print('403 ERROR')
             time.sleep(10)
             response = sess.get(url)
             soup = BeautifulSoup(response.text, 'html.parser')
