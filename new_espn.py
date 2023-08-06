@@ -210,5 +210,12 @@ if __name__ == '__main__':
     if args.p:
         check_progress()
 
+    ua = UserAgent()
+    random_ua = ua.random
+    header = {'User-Agent': random_ua}
+    sess = requests.session()
+
+    sess.post(login_url, data=data, headers=header)
+    
     else:
         main()
