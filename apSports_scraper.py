@@ -208,6 +208,9 @@ if __name__ == '__main__':
     
     args = parser.parse_args()
 
+    start_page = args.start_page
+    end_page = args.end_page
+
     if args.t != -1:
         thread_num = args.t
 
