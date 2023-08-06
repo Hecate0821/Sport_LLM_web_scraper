@@ -8,7 +8,7 @@ import argparse
 
 
 # article site url
-url = 'https://theathletic.com/'
+url = 'https://www.espn.com/soccer/insider/story/_/id/'
 
 # save directory
 const_local_path = './espn/'
