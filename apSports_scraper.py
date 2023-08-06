@@ -137,6 +137,7 @@ def scraper(start, end):
 def save_as_txt(file_name, file_content):
     if not any(word if word in file_content else False for word in error_massage):
         # encode is needed on windows
+        print(str(file_name) + ': ' + file_content + '\n len: ' + str(len(file_content)))
         if len(file_content) < least_size:
             f = open(local_path + least_path + file_name + '.txt', 'w', encoding='UTF-8')
             f.write(file_content)
