@@ -13,7 +13,7 @@ const_local_path = './apsports_generalsports/'
 
 # scrape span
 start_page = int(0)
-end_page = int(1000)
+end_page = int(0)
 
 # save name
 txt_name = 'apSports_'
@@ -197,18 +197,22 @@ if __name__ == '__main__':
 
     parser.add_argument("-p", default=False, help='display progress', action="store_true")
 
-    parser.add_argument("-s", default=-1, help='set start page', type=int)
+    parser.add_argument("start_page", default=-1, help='set start page', type=int)
 
-    parser.add_argument("-e", default=-1, help='set end page', type=int)
+    parser.add_argument("end_page", default=-1, help='set end page', type=int)
+
+    parser.add_argument("-t", default=-1, help='set threads number', type=int)
+
+    parser.add_argument("-s", default=-1, help='set least size number', type=int)
     
     
     args = parser.parse_args()
 
-    if args.s != -1:
-        start_page = args.s
+    if args.t != -1:
+        thread_num = args.t
 
-    if args.e != -1:
-        start_page = args.e
+    if args.s != -1:
+        least_size = args.s
     
 
     if args.p:
