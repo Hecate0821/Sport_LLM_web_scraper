@@ -35,22 +35,38 @@ error_massage = {
     'Error',
 }
 
-# put your code here
+login_url = 'https://registerdisney.go.com/jgc/v8/client/ESPN-ONESITE.WEB-PROD/guest/login?langPref=en-US&feature=no-password-reuse'
+
+data = {
+  "loginValue": "dicksiekeylen1226@zohomail.com",
+  "password": "Xintiao1401"
+}
+
+
+
+# please return '404' or 'error' for unwanted pages
 def get_content(page_num):
     my_url = url + str(page_num)
-    ua = UserAgent()
-    random_ua = ua.random
-    headers = {'User-Agent': random_ua}
-    response = requests.get(my_url, headers=headers)
-    content = BeautifulSoup(response.text, 'html.parser')
-    content_text = content.text
-    
-    if any(word if word in content_text else False for word in error_massage):
-        return content_text
+    response = sess.get(my_url)
+    soup = BeautifulSoup(response.text, 'html.parser')
+    while True:
+        if 'ESPN Page error' in soup.text:
+            return 'error'
+          
+        if '403 ERROR' in soup.text:
+            time.sleep(10)
+            response = sess.get(url)
+            soup = BeautifulSoup(response.text, 'html.parser')
 
-    # put your code below:
-        
-    return content.get_text()
+        else:
+            break
+    
+    art = soup.find('div', class_='article-body')
+    if art == None:
+        return soup.text
+    else:
+        article = art.text
+        return article
 
 
 def save_log(start, end, now):
