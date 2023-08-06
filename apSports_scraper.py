@@ -174,7 +174,7 @@ def check_progress():
 
 if __name__ == '__main__':
 
-        parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser()
 
     parser.add_argument("-p", default=False, help='display progress', action="store_true")
 
