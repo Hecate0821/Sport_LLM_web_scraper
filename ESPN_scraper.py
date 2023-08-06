@@ -172,28 +172,64 @@ if __name__ == '__main__':
     
     rst = 1
 
+
+
+if __name__ == '__main__':
+    
+    # cmd
+    parser = argparse.ArgumentParser()
+
+    parser.add_argument("-p", default=False, help='display progress', action="store_true")
+
+    parser.add_argument("start_page", default=-1, help='set start page', type=int)
+
+    parser.add_argument("end_page", default=-1, help='set end page', type=int)
+
+    parser.add_argument("-t", default=100, help='set threads number', type=int)
+
+    parser.add_argument("-s", default=100, help='set least size number', type=int)
+    
+    args = parser.parse_args()
+
+    # set page
+    start_page = args.start_page
+    end_page = args.end_page
+
+    #set thread
+    thread_num = args.t
+
+    # set least size
+    least_size = args.s
+
+    # create dirs
+    if not os.path.exists(const_local_path):
+        os.mkdir(const_local_path)
+    
+    local_path = const_local_path + str(start_page) + '_to_' + str(end_page) + '/'
+    if not os.path.exists(local_path):
+        os.mkdir(local_path)
+
+    log_path = local_path + 'log/'
+    if not os.path.exists(log_path):
+        os.mkdir(log_path)
+
+    least_path = 'sizeunder' + str(least_size) + '/'
+    if not os.path.exists(local_path + least_path):
+                os.mkdir(local_path + least_path)
+
+    error_path = 'error_txt/'
+    if not os.path.exists(local_path + error_path):
+                os.mkdir(local_path + error_path)
+
     ua = UserAgent()
     random_ua = ua.random
     header = {'User-Agent': random_ua}
     sess = requests.session()
 
     sess.post(login_url, data=data, headers=header)
+  
+    if args.p:
+        check_progress()
 
-    while True:
-        my_count = 0
-        print('in round:' + str(my_count))
-        my_count = my_count + 1
-        try:
-            rst = main()
-            if rst == 0:
-                break
-
-        except KeyboardInterrupt:
-            print('exit')
-            time.sleep(3)
-            break
-
-        except:
-            print("restarting...")
-            time.sleep(3)
-            pass
+    else:
+        main()
