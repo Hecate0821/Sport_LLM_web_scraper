@@ -146,6 +146,30 @@ def check_progress():
 
 if __name__ == '__main__':
 
+    parser = argparse.ArgumentParser()
+
+    parser.add_argument("-p", default=False, help='display progress', action="store_true")
+
+    parser.add_argument("start_page", default=-1, help='set start page', type=int)
+
+    parser.add_argument("end_page", default=-1, help='set end page', type=int)
+
+    parser.add_argument("-t", default=-1, help='set threads number', type=int)
+
+    parser.add_argument("-s", default=-1, help='set least size number', type=int)
+    
+    
+    args = parser.parse_args()
+
+    start_page = args.start_page
+    end_page = args.end_page
+
+    if args.t != -1:
+        thread_num = args.t
+
+    if args.s != -1:
+        least_size = args.s
+
     if not os.path.exists(const_local_path):
         os.mkdir(const_local_path)
     
@@ -164,12 +188,6 @@ if __name__ == '__main__':
     error_path = 'error_txt/'
     if not os.path.exists(local_path + error_path):
                 os.mkdir(local_path + error_path)
-
-    parser = argparse.ArgumentParser()
-
-    parser.add_argument("-p", default=False, help='display progress', action="store_true")
-
-    args = parser.parse_args()
 
     if args.p:
         check_progress()
