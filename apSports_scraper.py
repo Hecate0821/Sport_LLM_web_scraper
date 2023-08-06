@@ -49,12 +49,12 @@ def get_content(page_num):
     if any(word if word in content_text else False for word in error_massage):
         return content_text
 
-      while True:
+    while True:
         if 'Too Many Requests' in soup.text:
             time.sleep(10)
             response = requests.get(url)
             soup = BeautifulSoup(response.text, 'html.parser')
-
+    
         else:
             break
     
