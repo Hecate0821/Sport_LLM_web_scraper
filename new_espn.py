@@ -207,8 +207,7 @@ if __name__ == '__main__':
     if not os.path.exists(local_path + error_path):
                 os.mkdir(local_path + error_path)
 
-    if args.p:
-        check_progress()
+
 
     ua = UserAgent()
     random_ua = ua.random
@@ -217,5 +216,7 @@ if __name__ == '__main__':
 
     sess.post(login_url, data=data, headers=header)
     
+    if args.p:
+        check_progress()
     else:
         main()
