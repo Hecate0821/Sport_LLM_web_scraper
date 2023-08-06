@@ -174,26 +174,7 @@ def check_progress():
 
 if __name__ == '__main__':
 
-    if not os.path.exists(const_local_path):
-        os.mkdir(const_local_path)
-    
-    local_path = const_local_path + str(start_page) + '_to_' + str(end_page) + '/'
-    if not os.path.exists(local_path):
-        os.mkdir(local_path)
-
-    log_path = local_path + 'log/'
-    if not os.path.exists(log_path):
-        os.mkdir(log_path)
-
-    least_path = 'sizeunder' + str(least_size) + '/'
-    if not os.path.exists(local_path + least_path):
-                os.mkdir(local_path + least_path)
-
-    error_path = 'error_txt/'
-    if not os.path.exists(local_path + error_path):
-                os.mkdir(local_path + error_path)
-
-    parser = argparse.ArgumentParser()
+        parser = argparse.ArgumentParser()
 
     parser.add_argument("-p", default=False, help='display progress', action="store_true")
 
@@ -216,7 +197,25 @@ if __name__ == '__main__':
 
     if args.s != -1:
         least_size = args.s
+
+    if not os.path.exists(const_local_path):
+        os.mkdir(const_local_path)
     
+    local_path = const_local_path + str(start_page) + '_to_' + str(end_page) + '/'
+    if not os.path.exists(local_path):
+        os.mkdir(local_path)
+
+    log_path = local_path + 'log/'
+    if not os.path.exists(log_path):
+        os.mkdir(log_path)
+
+    least_path = 'sizeunder' + str(least_size) + '/'
+    if not os.path.exists(local_path + least_path):
+                os.mkdir(local_path + least_path)
+
+    error_path = 'error_txt/'
+    if not os.path.exists(local_path + error_path):
+                os.mkdir(local_path + error_path)
 
     if args.p:
         check_progress()
