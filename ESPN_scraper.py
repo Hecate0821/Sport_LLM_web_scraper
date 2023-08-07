@@ -123,29 +123,30 @@ def scraper(start, end):
 
 
 def save_as_txt(file_name, file_content):
-    if not ('404' or 'error') in file_content:
-        # encode is needed on windows
-        if len(file_content) < least_size:
-            error_path = 'sizeunder' + str(least_size) + '/'
-            if not os.path.exists(local_path + error_path):
-                os.mkdir(local_path + error_path)
-            f = open(local_path + error_path + file_name + '.txt', 'w', encoding='UTF-8')
-            f.write(file_content)
-        f = open(local_path + file_name + '.txt', 'w', encoding='UTF-8')
-        f.write(file_content)
-        f.close()
-
-    elif '404' in file_content:
+    if '404' in file_content:
         error_404_path = 'error_404_txt/'
         f = open(local_path + error_404_path + file_name + '.txt', 'w', encoding='UTF-8')
         f.write(file_content)
         pass
 
-    else:
+    elif 'error' in file_content:
         error_path = 'error_txt/'
         f = open(local_path + error_path + file_name + '.txt', 'w', encoding='UTF-8')
         f.write(file_content)
         pass
+
+    else:
+        # encode is needed on windows
+        if len(file_content) < least_size:
+            size_path = 'sizeunder' + str(least_size) + '/'
+            f = open(local_path + size_path + file_name + '.txt', 'w', encoding='UTF-8')
+            f.write(file_content)
+        f = open(local_path + file_name + '.txt', 'w', encoding='UTF-8')
+        f.write(file_content)
+        f.close()
+
+
+
 
 def check_progress():
     workload = int((end_page - start_page) / thread_num)
@@ -217,6 +218,11 @@ if __name__ == '__main__':
     error_404_path = 'error_404_txt/'
     if not os.path.exists(local_path + error_404_path):
                 os.mkdir(local_path + error_404_path)
+
+    size_path = 'sizeunder' + str(least_size) + '/'
+    if not os.path.exists(local_path + size_path):
+                os.mkdir(local_path + size_path)
+      
     if args.p:
         check_progress()
 
