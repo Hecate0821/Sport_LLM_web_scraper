@@ -37,10 +37,12 @@ data = {
 
 # please return '404' or 'error' for unwanted pages
 def get_content(page_num):
+    '''
     my_url = url + str(page_num)
     ua = UserAgent()
     random_ua = ua.random
-    headers = {'User-Agent': random_ua}
+    '''
+    headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHT'}
     response = requests.get(my_url, headers=headers)
     soup = BeautifulSoup(response.text, 'html.parser')
     while True:
