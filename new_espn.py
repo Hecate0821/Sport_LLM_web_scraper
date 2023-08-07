@@ -45,6 +45,7 @@ def get_content(page_num):
             return 'error'
           
         if '403 ERROR' in soup.text:
+            print('403 Error')
             time.sleep(10)
             response = sess.get(url)
             soup = BeautifulSoup(response.text, 'html.parser')
