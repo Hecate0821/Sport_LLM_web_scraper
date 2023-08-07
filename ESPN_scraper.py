@@ -121,7 +121,7 @@ def scraper(start, end):
 
 
 def save_as_txt(file_name, file_content):
-    if not '404' in file_content:
+    if not ('404' or 'error') in file_content:
         # encode is needed on windows
         if len(file_content) < least_size:
             error_path = 'sizeunder' + str(least_size) + '/'
