@@ -60,7 +60,6 @@ def get_content(page_num):
     
     art = soup.find('div', class_='article-body')
     if art == None:
-        print('art == NOne')
         none_massage = 'this page:' + my_url + ' has art == none\n'
         return none_massage + soup.text
     else:
