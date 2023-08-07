@@ -52,7 +52,7 @@ def get_content(page_num):
         if '403 ERROR' in soup.text:
             print('403 Error')
             time.sleep(10)
-            response = request.get(my_url, headers=headers)
+            response = requests.get(my_url, headers=headers)
             soup = BeautifulSoup(response.text, 'html.parser')
 
         else:
@@ -136,7 +136,7 @@ def save_as_txt(file_name, file_content):
         f.close()
 
     elif '404' in file_content:
-        err2_path = 'error2_txt/'
+        err2_path = 'error_404_txt/'
         f = open(local_path + err2_path + file_name + '.txt', 'w', encoding='UTF-8')
         f.write(file_content)
         pass
@@ -213,7 +213,10 @@ if __name__ == '__main__':
     error_path = 'error_txt/'
     if not os.path.exists(local_path + error_path):
                 os.mkdir(local_path + error_path)
-
+    
+    error_404_path = 'error_404_txt/'
+    if not os.path.exists(local_path + error_404_path):
+                os.mkdir(local_path + error_404_path)
     if args.p:
         check_progress()
 
