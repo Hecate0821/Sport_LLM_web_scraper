@@ -37,8 +37,8 @@ data = {
 
 # please return '404' or 'error' for unwanted pages
 def get_content(page_num):
-    '''
     my_url = url + str(page_num)
+    '''
     ua = UserAgent()
     random_ua = ua.random
     '''
