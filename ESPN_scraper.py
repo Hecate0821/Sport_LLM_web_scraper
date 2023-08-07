@@ -133,6 +133,12 @@ def save_as_txt(file_name, file_content):
         f.write(file_content)
         f.close()
 
+    elif '404' in file_content:
+        err2_path = 'error2_txt/'
+        f = open(local_path + err2_path + file_name + '.txt', 'w', encoding='UTF-8')
+        f.write(file_content)
+        pass
+
     else:
         err_path = 'error_txt/'
         f = open(local_path + err_path + file_name + '.txt', 'w', encoding='UTF-8')
