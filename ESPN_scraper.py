@@ -50,7 +50,6 @@ def get_content(page_num):
             return 'error'
           
         if '403 ERROR' in soup.text:
-            print('403 Error')
             time.sleep(10)
             response = requests.get(my_url, headers=headers)
             soup = BeautifulSoup(response.text, 'html.parser')
@@ -63,7 +62,6 @@ def get_content(page_num):
         none_massage = 'this page:' + my_url + ' has art == none\n'
         return none_massage + soup.text
     else:
-        print('art is ok')
         article = art.text
         return article
 
