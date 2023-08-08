@@ -12,7 +12,7 @@ import joblib
 bbc_sports_link = joblib.load('./bbc_sports_link')
 
 # save directory
-const_local_path = './BBCsports_generalsports'
+const_local_path = './BBCsports_generalsports0_to_704576'
 
 # scrape span
 start_page = int(0)
