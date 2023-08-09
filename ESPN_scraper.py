@@ -34,6 +34,16 @@ data = {
 }
 
 
+skip_code = {
+    '404',
+}
+
+# code to retry
+retry_code = {
+    '403',
+}
+
+
 
 # please return '404' or 'error' for unwanted pages
 def get_content(page_num):
