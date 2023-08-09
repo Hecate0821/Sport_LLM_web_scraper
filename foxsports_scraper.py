@@ -29,8 +29,8 @@ least_size = int(100)
 
 # error massage list, if in content.text, file would be put in error directory
 error_massage = {
-    'error',
-    'Error',
+    'error:',
+    'Error:',
 }
 
 # code to skip
@@ -54,7 +54,7 @@ def get_content(page_num):
     response_code = response.status_code
 
     if any(word if int(word) == response_code else False for word in skip_code):
-        return 'error ' + str(skip_code)
+        return 'error: ' + str(skip_code)
 
     elif any(word if int(word) == response_code else False for word in retry_code):
         my_response_code = ''
@@ -64,7 +64,7 @@ def get_content(page_num):
             if any(word if int(word) == my_response_code else False for word in retry_code):
                 pass
             elif any(word if int(word) == response_code else False for word in skip_code):
-                    return 'error ' + str(skip_code)
+                    return 'error: ' + str(skip_code)
             else:
                 break
 
