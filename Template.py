@@ -5,20 +5,20 @@ import os
 from threading import Thread
 from fake_useragent import UserAgent
 import argparse
-
+import joblib
 
 # article site url
-url = 'https://theathletic.com/'
 
+article_link_list = joblib.load('./fox_sports_link')
 # save directory
-const_local_path = './Articles/'
+const_local_path = './foxsports_generalsports/'
 
 # scrape span
-start_page = int(100)
-end_page = int(200)
+start_page = int(0)
+end_page = int(1232800)
 
 # save name
-txt_name = 'example_'
+txt_name = 'foxsports_'
 
 # thread number
 # (end - start) is preferably a multiple of thread number
@@ -29,28 +29,61 @@ least_size = int(100)
 
 # error massage list, if in content.text, file would be put in error directory
 error_massage = {
-    '403',
-    '404',
     'error',
     'Error',
 }
 
+# code to skip
+skip_code = {
+    '404',
+}
+
+# code to retry
+retry_code = {
+    '403',
+}
+
 # put your code here
 def get_content(page_num):
-    my_url = url + str(page_num)
+    my_url = article_link_list[page_num]
     ua = UserAgent()
     random_ua = ua.random
     headers = {'User-Agent': random_ua}
     response = requests.get(my_url, headers=headers)
+
+    response_code = response.status_code
+
+    if any(word if int(word) == response_code else False for word in skip_code):
+        return 'error ' + str(skip_code)
+
+    elif any(word if int(word) == response_code else False for word in retry_code):
+        my_response_code = ''
+        while True:
+            time.sleep(5)
+            my_response_code = requests.get(my_url, headers=headers)
+            if any(word if int(word) == my_response_code else False for word in retry_code):
+                pass
+            elif any(word if int(word) == response_code else False for word in skip_code):
+                    return 'error ' + str(skip_code)
+            else:
+                break
+
     content = BeautifulSoup(response.text, 'html.parser')
-    content_text = content.text
-    
-    if any(word if word in content_text else False for word in error_massage):
-        return content_text
+    content_txt = content.text
+
+    art = content.find_all('p', class_="mg-t-b-20 ff-h fs-16 lh-1pt88 mg-t-b-20 article-content")
+    story = ''
+    if art == None:
+        return 'error: art == None\n' + content_txt
+    else:
+        for word in art:
+            story = story + word.text
+        if story != None or story != '' or story != 'null':
+            return story
+        else:
+            return 'error: story == None\n'
 
     # put your code below:
-        
-    return content.get_text()
 
 
 def save_log(start, end, now):
@@ -79,8 +112,8 @@ def main():
 
     thread_list = []
 
-    for i in range(1, thread_num+1):
-        t = Thread(target=scraper, args=[start_page + (i-1) * workload, start_page + i * workload, ])
+    for i in range(1, thread_num + 1):
+        t = Thread(target=scraper, args=[start_page + (i - 1) * workload, start_page + i * workload, ])
         thread_list.append(t)
 
     for t in thread_list:
@@ -108,12 +141,15 @@ def scraper(start, end):
 
 
 def save_as_txt(file_name, file_content):
+    # if no error in file content
     if not any(word if word in file_content else False for word in error_massage):
-        # encode is needed on windows
+
+        # if file's size under ...
         if len(file_content) < least_size:
             f = open(local_path + least_path + file_name + '.txt', 'w', encoding='UTF-8')
             f.write(file_content)
             f.close()
+
         f = open(local_path + file_name + '.txt', 'w', encoding='UTF-8')
         f.write(file_content)
         f.close()
@@ -145,7 +181,7 @@ def check_progress():
 
 
 if __name__ == '__main__':
-    
+
     # cmd
     parser = argparse.ArgumentParser()
 
@@ -158,14 +194,14 @@ if __name__ == '__main__':
     parser.add_argument("-t", default=100, help='set threads number', type=int)
 
     parser.add_argument("-s", default=100, help='set least size number', type=int)
-    
+
     args = parser.parse_args()
 
     # set page
     start_page = args.start_page
     end_page = args.end_page
 
-    #set thread
+    # set thread
     thread_num = args.t
 
     # set least size
@@ -174,7 +210,7 @@ if __name__ == '__main__':
     # create dirs
     if not os.path.exists(const_local_path):
         os.mkdir(const_local_path)
-    
+
     local_path = const_local_path + str(start_page) + '_to_' + str(end_page) + '/'
     if not os.path.exists(local_path):
         os.mkdir(local_path)
@@ -185,11 +221,11 @@ if __name__ == '__main__':
 
     least_path = 'sizeunder' + str(least_size) + '/'
     if not os.path.exists(local_path + least_path):
-                os.mkdir(local_path + least_path)
+        os.mkdir(local_path + least_path)
 
     error_path = 'error_txt/'
     if not os.path.exists(local_path + error_path):
-                os.mkdir(local_path + error_path)
+        os.mkdir(local_path + error_path)
 
     if args.p:
         check_progress()
