@@ -7,18 +7,18 @@ from fake_useragent import UserAgent
 import argparse
 import joblib
 
-# article site url
+url = 'https://www.espn.com/soccer/insider/story/_/id/'
 
-article_link_list = joblib.load('./fox_sports_link')
 # save directory
-const_local_path = './foxsports_generalsports/'
+const_local_path = './espnArticles/'
+
+# save_name
+txt_name = 'espn_'
 
 # scrape span
 start_page = int(0)
 end_page = int(1232800)
 
-# save name
-txt_name = 'foxsports_'
 
 # thread number
 # (end - start) is preferably a multiple of thread number
@@ -68,10 +68,9 @@ class Article:
 def get_content(page_num):
     article = Article()
 
-    my_url = article_link_list[page_num]
-    ua = UserAgent()
-    random_ua = ua.random
-    headers = {'User-Agent': random_ua}
+    my_url = url+str(page_num)
+
+    headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHT'}
 
     for i in range(max_retries):
         try:
@@ -142,26 +141,47 @@ def get_content(page_num):
     content = BeautifulSoup(response.text, 'html.parser')
     content_txt = content.text
 
-    art = content.find_all('p', class_="mg-t-b-20 ff-h fs-16 lh-1pt88 mg-t-b-20 article-content")
-    story = ''
+    retry_counter = 0
+    retry_sleep = 10
+    while True:
 
-    if art is None:
-        article.set_content(content_txt)
-        article.set_type('art==None_error')
-        return article
-    else:
-        for word in art:
-            story = story + word.text
+        time.sleep(retry_sleep)
+        if retry_counter < 50:
+            if 'ESPN Page error' in content_txt:
+                article.set_content('espn page error in' + my_url)
+                article.set_type('espn_page_error')
+                return article
 
-        if story != None or story != '' or story != 'null':
-            article.set_content(story)
-            article.set_type('success')
-            return article
+            if '403 ERROR' in content_txt:
+                time.sleep(10)
+                try:
+                    response = requests.get(my_url, headers=headers)
+                    content = BeautifulSoup(response.text, 'html.parser')
+
+                except:
+                    pass
+
+            else:
+                break
 
         else:
-            article.set_content(content_txt)
-            article.set_type('story==None_error')
+            article.set_content('404error in ' + my_url)
+            article.set_type('404error')
             return article
+
+            break
+
+    art = content.find('div', class_='article-body')
+
+    if art is None:
+        article.set_content('error: this page:' + my_url + ' has art == none\n')
+        article.set_type('art_is_none')
+        return article
+
+    else:
+        article.set_content(art.text)
+        article.set_type('success')
+        return article
 
 
 def save_log(start, end, now):
