@@ -83,14 +83,14 @@ def get_content(page_num):
                 time.sleep(retry_delay)
             else:
                 # 达到最大重试次数，进行错误处理
-                article.set_content('max retries error in' + my_url)
+                article.set_content('max retries error in ' + my_url)
                 article.set_type('max_retries_error')
                 return article
 
     response_code = response.status_code
 
     if any(word if int(word) == response_code else False for word in skip_code):
-        article.set_content(str(skip_code) + 'error in' + my_url)
+        article.set_content(str(skip_code) + 'error in ' + my_url)
         article.set_type(str(skip_code) + 'error')
         return article
 
@@ -108,7 +108,7 @@ def get_content(page_num):
                             time.sleep(retry_delay)
                         else:
                             # 达到最大重试次数，进行错误处理
-                            article.set_content('max retries error in' + my_url)
+                            article.set_content('max retries error in ' + my_url)
                             article.set_type('max_retries_error')
                             return article
 
@@ -118,7 +118,7 @@ def get_content(page_num):
                     pass
 
                 elif any(word if int(word) == response_code else False for word in skip_code):
-                    article.set_content(str(skip_code) + 'error in' + my_url)
+                    article.set_content(str(skip_code) + 'error in ' + my_url)
                     article.set_type(str(skip_code) + 'error')
 
                     return article
