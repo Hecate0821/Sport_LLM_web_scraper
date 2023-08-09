@@ -252,15 +252,22 @@ def save_as_txt(file_name, file_content):
         f.close()
 
     else:
-        # create a directory for each type of error
-        type_path = local_path + error_path + file_content.type + '/'
-        if not os.path.exists(type_path):
-            os.mkdir(type_path)
+        if len(file_content.content) < least_size:
+            type_log_path = local_path + error_path + file_content.type + '.txt'
+            f = open(type_log_path, 'a')
+            f.write(file_content.content + '\n')
 
-        f = open(type_path + file_name + '.txt', 'w', encoding='UTF-8')
-        f.write(file_content.content)
-        f.close()
-        pass
+
+        else:
+            # create a directory for each type of error
+            type_path = local_path + error_path + file_content.type + '/'
+            if not os.path.exists(type_path):
+                os.mkdir(type_path)
+
+            f = open(type_path + file_name + '.txt', 'w', encoding='UTF-8')
+            f.write(file_content.content)
+            f.close()
+
 
 
 def check_progress():
