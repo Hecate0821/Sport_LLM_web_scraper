@@ -43,47 +43,126 @@ retry_code = {
     '403',
 }
 
+# max retries and delay
+max_retries = int(50)
+retry_delay = int(5)
+
+delay_403 = int(20)
+
+class Article:
+    content = 'default content'
+    type = 'default type'
+
+    def __init__(self):
+        self.content = 'default content'
+        self.type = 'default type'
+
+    def set_content(self, content):
+        self.content = content
+
+    def set_type(self, type):
+        self.type = type
+
+
 # put your code here
 def get_content(page_num):
+    article = Article()
+
     my_url = article_link_list[page_num]
     ua = UserAgent()
     random_ua = ua.random
     headers = {'User-Agent': random_ua}
-    response = requests.get(my_url, headers=headers)
+
+    for i in range(max_retries):
+        try:
+            response = requests.get(my_url, headers=headers)
+            # 处理响应数据
+            break  # 请求成功，退出循环
+        except requests.exceptions.RequestException:
+            if i < max_retries - 1:
+                time.sleep(retry_delay)
+            else:
+                # 达到最大重试次数，进行错误处理
+                article.set_content('max retries error in' + my_url)
+                article.set_type('max_retries_error')
+                return article
 
     response_code = response.status_code
 
     if any(word if int(word) == response_code else False for word in skip_code):
-        return 'error ' + str(skip_code)
+        article.set_content(str(skip_code) + 'error in' + my_url)
+        article.set_type(str(skip_code) + 'error')
+        return article
 
     elif any(word if int(word) == response_code else False for word in retry_code):
         my_response_code = ''
-        while True:
-            time.sleep(5)
-            my_response_code = requests.get(my_url, headers=headers)
-            if any(word if int(word) == my_response_code else False for word in retry_code):
-                pass
-            elif any(word if int(word) == response_code else False for word in skip_code):
-                    return 'error ' + str(skip_code)
-            else:
+        for j in range(max_retries):
+            try:
+                for i in range(max_retries):
+                    try:
+                        response = requests.get(my_url, headers=headers)
+                        # 处理响应数据
+                        break  # 请求成功，退出循环
+                    except requests.exceptions.RequestException:
+                        if i < max_retries - 1:
+                            time.sleep(retry_delay)
+                        else:
+                            # 达到最大重试次数，进行错误处理
+                            article.set_content('max retries error in' + my_url)
+                            article.set_type('max_retries_error')
+                            return article
+
+                my_response_code = response.status_code
+
+                if any(word if int(word) == my_response_code else False for word in retry_code):
+                    pass
+
+                elif any(word if int(word) == response_code else False for word in skip_code):
+                    article.set_content(str(skip_code) + 'error in' + my_url)
+                    article.set_type(str(skip_code) + 'error')
+
+                    return article
+
+                else:
+                    break
+
                 break
+
+            except:
+                if j < max_retries - 1:
+                    time.sleep(delay_403)
+                else:
+                    # 达到最大重试次数，进行错误处理
+                    article.set_content(str(response_code) + "error with url: " + my_url)
+                    article.set_type(str(response_code) + "error")
+                    return article
+
+
 
     content = BeautifulSoup(response.text, 'html.parser')
     content_txt = content.text
 
     art = content.find_all('p', class_="mg-t-b-20 ff-h fs-16 lh-1pt88 mg-t-b-20 article-content")
     story = ''
-    if art == None:
-        return 'error: art == None\n' + content_txt
+
+    if art is None:
+        article.set_content(content_txt)
+        article.set_type('art==None_error')
+        return article
     else:
         for word in art:
             story = story + word.text
-        if story != None or story != '' or story != 'null':
-            return story
-        else:
-            return 'error: story == None\n'
 
-    # put your code below:
+        if story != None or story != '' or story != 'null':
+            article.set_content(story)
+            article.set_type('success')
+            return article
+
+        else:
+            article.set_content(content_txt)
+            article.set_type('story==None_error')
+            return article
+
 
 
 def save_log(start, end, now):
@@ -142,21 +221,25 @@ def scraper(start, end):
 
 def save_as_txt(file_name, file_content):
     # if no error in file content
-    if not any(word if word in file_content else False for word in error_massage):
-
+    if file_content.type == 'success':
         # if file's size under ...
-        if len(file_content) < least_size:
+        if len(file_content.content) < least_size:
             f = open(local_path + least_path + file_name + '.txt', 'w', encoding='UTF-8')
-            f.write(file_content)
+            f.write(file_content.content)
             f.close()
 
         f = open(local_path + file_name + '.txt', 'w', encoding='UTF-8')
-        f.write(file_content)
+        f.write(file_content.content)
         f.close()
 
     else:
-        f = open(local_path + error_path + file_name + '.txt', 'w', encoding='UTF-8')
-        f.write(file_content)
+        # create a directory for each type of error
+        type_path = local_path + error_path + file_content.type + '/'
+        if not os.path.exists(type_path):
+            os.mkdir(type_path)
+
+        f = open(type_path + file_name + '.txt', 'w', encoding='UTF-8')
+        f.write(file_content.content)
         f.close()
         pass
 
