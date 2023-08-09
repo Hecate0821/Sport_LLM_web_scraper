@@ -5,60 +5,163 @@ import os
 from threading import Thread
 from fake_useragent import UserAgent
 import argparse
+import joblib
 
 # article site url
-url = 'https://www.espn.com/soccer/insider/story/_/id/'
 
+article_link_list = joblib.load('./fox_sports_link')
 # save directory
-const_local_path = './espnArticles/'
-
-# save_name
-txt_name = 'espn_'
+const_local_path = './foxsports_generalsports/'
 
 # scrape span
-start_page = int(500)
-end_page = int(38200500)
+start_page = int(0)
+end_page = int(1232800)
+
+# save name
+txt_name = 'foxsports_'
 
 # thread number
 # (end - start) is preferably a multiple of thread number
-thread_num = int(500)
+thread_num = int(100)
 
-# least
+# file least size
 least_size = int(100)
 
-login_url = 'https://registerdisney.go.com/jgc/v8/client/ESPN-ONESITE.WEB-PROD/guest/login?langPref=en-US&feature=no-password-reuse'
-
-data = {
-  "loginValue": "dicksiekeylen1226@zohomail.com",
-  "password": "Xintiao1401"
+# error massage list, if in content.text, file would be put in error directory
+error_massage = {
+    'error',
+    'Error',
 }
 
+# code to skip
+skip_code = {
+    '404',
+}
+
+# code to retry
+retry_code = {
+    '403',
+}
+
+# max retries and delay
+max_retries = int(50)
+retry_delay = int(5)
+
+delay_403 = int(20)
+
+class Article:
+    content = 'default content'
+    type = 'default type'
+
+    def __init__(self):
+        self.content = 'default content'
+        self.type = 'default type'
+
+    def set_content(self, content):
+        self.content = content
+
+    def set_type(self, type):
+        self.type = type
 
 
-# please return '404' or 'error' for unwanted pages
+# put your code here
 def get_content(page_num):
-    my_url = url + str(page_num)
-    response = sess.get(my_url)
-    soup = BeautifulSoup(response.text, 'html.parser')
-    while True:
-        if 'ESPN Page error' in soup.text:
-            return 'error'
-          
-        if '403 ERROR' in soup.text:
-            print('403 Error')
-            time.sleep(10)
-            response = sess.get(url)
-            soup = BeautifulSoup(response.text, 'html.parser')
+    article = Article()
+
+    my_url = article_link_list[page_num]
+    ua = UserAgent()
+    random_ua = ua.random
+    headers = {'User-Agent': random_ua}
+
+    for i in range(max_retries):
+        try:
+            response = requests.get(my_url, headers=headers)
+            # 处理响应数据
+            break  # 请求成功，退出循环
+        except requests.exceptions.RequestException:
+            if i < max_retries - 1:
+                time.sleep(retry_delay)
+            else:
+                # 达到最大重试次数，进行错误处理
+                article.set_content('max retries error in ' + my_url)
+                article.set_type('max_retries_error')
+                return article
+
+    response_code = response.status_code
+
+    if any(word if int(word) == response_code else False for word in skip_code):
+        article.set_content(str(skip_code) + 'error in ' + my_url)
+        article.set_type(str(skip_code) + 'error')
+        return article
+
+    elif any(word if int(word) == response_code else False for word in retry_code):
+        my_response_code = ''
+        for j in range(max_retries):
+            try:
+                for i in range(max_retries):
+                    try:
+                        response = requests.get(my_url, headers=headers)
+                        # 处理响应数据
+                        break  # 请求成功，退出循环
+                    except requests.exceptions.RequestException:
+                        if i < max_retries - 1:
+                            time.sleep(retry_delay)
+                        else:
+                            # 达到最大重试次数，进行错误处理
+                            article.set_content('max retries error in ' + my_url)
+                            article.set_type('max_retries_error')
+                            return article
+
+                my_response_code = response.status_code
+
+                if any(word if int(word) == my_response_code else False for word in retry_code):
+                    pass
+
+                elif any(word if int(word) == response_code else False for word in skip_code):
+                    article.set_content(str(skip_code) + 'error in ' + my_url)
+                    article.set_type(str(skip_code) + 'error')
+
+                    return article
+
+                else:
+                    break
+
+                break
+
+            except:
+                if j < max_retries - 1:
+                    time.sleep(delay_403)
+                else:
+                    # 达到最大重试次数，进行错误处理
+                    article.set_content(str(response_code) + "error with url: " + my_url)
+                    article.set_type(str(response_code) + "error")
+                    return article
+
+
+    # put your code below:
+    content = BeautifulSoup(response.text, 'html.parser')
+    content_txt = content.text
+
+    art = content.find_all('p', class_="mg-t-b-20 ff-h fs-16 lh-1pt88 mg-t-b-20 article-content")
+    story = ''
+
+    if art is None:
+        article.set_content(content_txt)
+        article.set_type('art==None_error')
+        return article
+    else:
+        for word in art:
+            story = story + word.text
+
+        if story != None or story != '' or story != 'null':
+            article.set_content(story)
+            article.set_type('success')
+            return article
 
         else:
-            break
-    
-    art = soup.find('div', class_='article-body')
-    if art == None:
-        return soup.text
-    else:
-        article = art.text
-        return article
+            article.set_content(content_txt)
+            article.set_type('story==None_error')
+            return article
 
 
 def save_log(start, end, now):
@@ -87,8 +190,8 @@ def main():
 
     thread_list = []
 
-    for i in range(1, thread_num+1):
-        t = Thread(target=scraper, args=[start_page + (i-1) * workload, start_page + i * workload, ])
+    for i in range(1, thread_num + 1):
+        t = Thread(target=scraper, args=[start_page + (i - 1) * workload, start_page + i * workload, ])
         thread_list.append(t)
 
     for t in thread_list:
@@ -116,20 +219,29 @@ def scraper(start, end):
 
 
 def save_as_txt(file_name, file_content):
-    if (file_content[0:5] != 'Error') and (file_content[0:5] != 'error') and (file_content[0:3] != '404'):
-        # encode is needed on windows
-        if len(file_content) < least_size:
-            error_path = 'sizeunder' + str(least_size) + '/'
-            if not os.path.exists(local_path + error_path):
-                os.mkdir(local_path + error_path)
-            f = open(local_path + error_path + file_name + '.txt', 'w', encoding='UTF-8')
-            f.write(file_content)
+    # if no error in file content
+    if file_content.type == 'success':
+        # if file's size under ...
+        if len(file_content.content) < least_size:
+            f = open(local_path + least_path + file_name + '.txt', 'w', encoding='UTF-8')
+            f.write(file_content.content)
+            f.close()
+
         f = open(local_path + file_name + '.txt', 'w', encoding='UTF-8')
-        f.write(file_content)
+        f.write(file_content.content)
         f.close()
 
     else:
+        # create a directory for each type of error
+        type_path = local_path + error_path + file_content.type + '/'
+        if not os.path.exists(type_path):
+            os.mkdir(type_path)
+
+        f = open(type_path + file_name + '.txt', 'w', encoding='UTF-8')
+        f.write(file_content.content)
+        f.close()
         pass
+
 
 def check_progress():
     workload = int((end_page - start_page) / thread_num)
@@ -150,9 +262,8 @@ def check_progress():
             percentage) + '%')
 
 
-
 if __name__ == '__main__':
-    
+
     # cmd
     parser = argparse.ArgumentParser()
 
@@ -165,14 +276,14 @@ if __name__ == '__main__':
     parser.add_argument("-t", default=100, help='set threads number', type=int)
 
     parser.add_argument("-s", default=100, help='set least size number', type=int)
-    
+
     args = parser.parse_args()
 
     # set page
     start_page = args.start_page
     end_page = args.end_page
 
-    #set thread
+    # set thread
     thread_num = args.t
 
     # set least size
@@ -181,7 +292,7 @@ if __name__ == '__main__':
     # create dirs
     if not os.path.exists(const_local_path):
         os.mkdir(const_local_path)
-    
+
     local_path = const_local_path + str(start_page) + '_to_' + str(end_page) + '/'
     if not os.path.exists(local_path):
         os.mkdir(local_path)
@@ -192,22 +303,14 @@ if __name__ == '__main__':
 
     least_path = 'sizeunder' + str(least_size) + '/'
     if not os.path.exists(local_path + least_path):
-                os.mkdir(local_path + least_path)
+        os.mkdir(local_path + least_path)
 
     error_path = 'error_txt/'
     if not os.path.exists(local_path + error_path):
-                os.mkdir(local_path + error_path)
+        os.mkdir(local_path + error_path)
 
     if args.p:
         check_progress()
 
     else:
-      ua = UserAgent()
-      random_ua = ua.random
-      header = {'User-Agent': random_ua}
-      sess = requests.session()
-
-      sess.post(login_url, data=data, headers=header)
-
-      print('entering main')
-      main()
+        main()
