@@ -29,8 +29,6 @@ least_size = int(100)
 
 # error massage list, if in content.text, file would be put in error directory
 error_massage = {
-    '403',
-    '404',
     'error',
     'Error',
 }
