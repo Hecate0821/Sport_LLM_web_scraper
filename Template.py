@@ -164,7 +164,6 @@ def get_content(page_num):
             return article
 
 
-
 def save_log(start, end, now):
     filename = log_path + 'log_' + str(start) + '_' + str(end) + '.txt'
     f = open(filename, 'w', encoding='UTF-8')
