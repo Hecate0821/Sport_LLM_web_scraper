@@ -59,7 +59,7 @@ def get_content(page_num):
     response_code = response.status_code
 
     if any(word if int(word) == response_code else False for word in skip_code):
-        return 'error ' + str(skip_code)
+        return 'error: ' + str(skip_code)
 
     elif any(word if int(word) == response_code else False for word in retry_code):
         my_response_code = ''
@@ -69,14 +69,14 @@ def get_content(page_num):
             if any(word if int(word) == my_response_code else False for word in retry_code):
                 pass
             elif any(word if int(word) == response_code else False for word in skip_code):
-                    return 'error ' + str(skip_code)
+                    return 'error: ' + str(skip_code)
             else:
                 break
 
     
     while True:
         if 'ESPN Page error' in soup.text:
-            return 'error'
+            return 'error: ESPN page error'
           
         if '403 ERROR' in soup.text:
             time.sleep(10)
@@ -88,7 +88,7 @@ def get_content(page_num):
     
     art = soup.find('div', class_='article-body')
     if art == None:
-        none_massage = 'this page:' + my_url + ' has art == none\n'
+        none_massage = 'error: this page:' + my_url + ' has art == none\n'
         return none_massage + soup.text
     else:
         article = art.text
@@ -156,7 +156,7 @@ def save_as_txt(file_name, file_content):
         f.write(file_content)
         pass
 
-    elif 'error' in file_content:
+    elif 'error:' in file_content:
         error_path = 'error_txt/'
         f = open(local_path + error_path + file_name + '.txt', 'w', encoding='UTF-8')
         f.write(file_content)
