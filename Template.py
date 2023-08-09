@@ -138,7 +138,7 @@ def get_content(page_num):
                     return article
 
 
-
+    # put your code below:
     content = BeautifulSoup(response.text, 'html.parser')
     content_txt = content.text
 
