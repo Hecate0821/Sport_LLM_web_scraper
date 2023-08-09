@@ -45,6 +45,25 @@ def get_content(page_num):
     headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHT'}
     response = requests.get(my_url, headers=headers)
     soup = BeautifulSoup(response.text, 'html.parser')
+
+    response_code = response.status_code
+
+    if any(word if int(word) == response_code else False for word in skip_code):
+        return 'error ' + str(skip_code)
+
+    elif any(word if int(word) == response_code else False for word in retry_code):
+        my_response_code = ''
+        while True:
+            time.sleep(5)
+            my_response_code = requests.get(my_url, headers=headers)
+            if any(word if int(word) == my_response_code else False for word in retry_code):
+                pass
+            elif any(word if int(word) == response_code else False for word in skip_code):
+                    return 'error ' + str(skip_code)
+            else:
+                break
+
+    
     while True:
         if 'ESPN Page error' in soup.text:
             return 'error'
