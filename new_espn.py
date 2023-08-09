@@ -125,7 +125,6 @@ def get_content(page_num):
                 else:
                     break
 
-                break
 
             except:
                 if j < max_retries - 1:
