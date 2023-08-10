@@ -88,8 +88,8 @@ def get_content(page_num):
     response_code = response.status_code
 
     if any(word if int(word) == response_code else False for word in skip_code):
-        article.set_content(str(skip_code) + 'error in ' + my_url)
-        article.set_type(str(skip_code) + 'error')
+        article.set_content(str(response_code) + 'error in ' + my_url)
+        article.set_type(str(response_code) + 'error')
         return article
 
     content = BeautifulSoup(response.text, 'html.parser')
