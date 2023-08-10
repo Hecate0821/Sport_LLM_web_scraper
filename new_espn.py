@@ -6,6 +6,8 @@ from threading import Thread
 from fake_useragent import UserAgent
 import argparse
 import joblib
+from requests.adapters import HTTPAdapter
+from requests.packages.urllib3.util.retry import Retry
 
 url = 'https://www.espn.com/soccer/insider/story/_/id/'
 
