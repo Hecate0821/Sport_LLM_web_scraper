@@ -32,6 +32,7 @@ least_size = int(100)
 # error massage list, if in content.text, file would be put in error directory
 skip_code = {
     '404',
+    '503',
 }
 
 # 重试策略
@@ -61,7 +62,7 @@ class Article:
 def get_content(page_num):
     article = Article()
 
-    my_url = article_link_list[page_num]
+    my_url = url + str(page_num)
     ua = UserAgent()
     random_ua = ua.random
     headers = {'User-Agent': random_ua}
