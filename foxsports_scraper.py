@@ -73,7 +73,13 @@ def get_content(page_num):
     session.mount("http://", adapter)
     session.mount("https://", adapter)
 
-    response = session.get(my_url, headers=headers)
+    try:
+        response = session.get(my_url, headers=headers)
+
+    except:
+        article.set_content('max retries in' + my_url)
+        article.set_type('max_retries_error')
+        return article
 
     content = BeautifulSoup(response.text, 'html.parser')
     content_txt = content.text
@@ -85,6 +91,7 @@ def get_content(page_num):
         article.set_content(content_txt)
         article.set_type('art==None_error')
         return article
+        
     else:
         for word in art:
             story = story + word.text
