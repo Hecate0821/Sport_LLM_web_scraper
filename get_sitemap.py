@@ -2,7 +2,6 @@
 import requests
 from bs4 import BeautifulSoup
 import time
-from tqdm import tqdm
 from fake_useragent import UserAgent
 ua = UserAgent()
 import joblib
@@ -20,19 +19,16 @@ def get_sitemap(url):
     urls = soup.find_all('loc')
     sitemap_url_list = []
     for url in urls:
-        # Extract the URL text
         url_text = url.get_text()
         sitemap_url_list.append(url_text)
         
     article_link_list = []
-    for link in tqdm(sitemap_url_list[:236]):
+    for link in (sitemap_url_list[:236]):
         sitemap_url = link
         ua = UserAgent()
         random_ua = ua.random
         headers = {'User-Agent':random_ua}
         response = requests.get(sitemap_url, headers=headers)
-        # Get the sitemap
-
 
         # Parse the XML response with BeautifulSoup
         soup = BeautifulSoup(response.content, 'xml')
