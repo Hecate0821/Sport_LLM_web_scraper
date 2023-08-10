@@ -9,16 +9,17 @@ import joblib
 
 # article site url
 
-article_link_list = joblib.load('/Users/chris/Downloads/espncricket_link_list')
+article_link_list = joblib.load('./cycling_list')
 # save directory
-const_local_path = '/Users/chris/Documents/espncricket_cricket/'
+const_local_path = './cyclingnews_cycling/'
+
 
 # scrape span
 start_page = int(0)
-end_page = int(21841)
+end_page = int(399134)
 
 # save name
-txt_name = 'espncricket_'
+txt_name = 'cyclingnews_'
 
 # thread number
 # (end - start) is preferably a multiple of thread number
@@ -26,27 +27,21 @@ thread_num = int(100)
 
 
 # please return '404' or 'error' for unwanted pages 
-def get_espncricket(page_num):
+def get_cycling(page_num):
     url = article_link_list[page_num]
-    try:
-        response = requests.get(url)
-    
-        soup = BeautifulSoup(response.text, 'html.parser')
-        art = soup.find('div',class_="ds-pb-8")
-        if art == None:
-            return 'error'
-        else:
-            lines = art.text.strip().split('\n')
-            lines = [line for line in lines if line.strip() != '']
-            paragraph = '\n'.join(lines)
-            if 'Terms of Use' in paragraph:
-                paragraph = paragraph.split('Terms of Use')[0]
-                return paragraph
-            else:
-                return paragraph
-    except:
-        
+    response = requests.get(url)
+    soup = BeautifulSoup(response.text, 'html.parser')
+    art = soup.find('div',class_="wcp-item-content")
+    if art == None:
         return 'error'
+    lines = art.text.strip().split('\n')
+    lines = [line for line in lines if line.strip() != '']
+    paragraph = '\n'.join(lines)
+    if 'Thank you for reading' in paragraph:
+        paragraph = paragraph.split('Thank you for reading')[0]
+        return paragraph
+    else:
+        return paragraph
 
 
 def save_log(start, end, now):
@@ -97,7 +92,7 @@ def scraper(start, end):
         if now > end:
             break
 
-        content = get_espncricket(now)
+        content = get_cycling(now)
         save_as_txt(txt_name + str(now), content)
         save_log(start, end, now)
         now = now + 1
