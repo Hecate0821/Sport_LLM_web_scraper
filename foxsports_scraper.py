@@ -54,7 +54,7 @@ class Article:
 
     def __init__(self):
         self.content = 'default content'
-        self.type = 'default type'
+        self.type = 'default_type'
 
     def set_content(self, content):
         self.content = content
