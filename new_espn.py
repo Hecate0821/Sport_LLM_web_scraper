@@ -105,6 +105,7 @@ def get_content(page_num):
             if '403 ERROR' in content_txt:
                 time.sleep(10)
                 try:
+                    print('404 error! status code: ' + str(response_code))
                     response = requests.get(my_url, headers=headers)
                     content = BeautifulSoup(response.text, 'html.parser')
 
