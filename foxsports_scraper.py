@@ -36,6 +36,10 @@ error_massage = {
     'Error',
 }
 
+skip_code = {
+    '404',
+}
+
 # 重试策略
 retry_strategy = Retry(
     total=10,  # 最大重试次数
@@ -79,6 +83,13 @@ def get_content(page_num):
     except:
         article.set_content('max retries in' + my_url)
         article.set_type('max_retries_error')
+        return article
+
+    response_code = response.status_code
+
+    if any(word if int(word) == response_code else False for word in skip_code):
+        article.set_content(str(skip_code) + 'error in ' + my_url)
+        article.set_type(str(skip_code) + 'error')
         return article
 
     content = BeautifulSoup(response.text, 'html.parser')
