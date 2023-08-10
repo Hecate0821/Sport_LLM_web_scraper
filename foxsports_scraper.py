@@ -108,7 +108,7 @@ def get_content(page_num):
             story = story + word.text
 
         if story != None or story != '' or story != 'null':
-            article.set_content('response code is :\n' + response_code + '\n + content is :\n' + story)
+            article.set_content('response code is :\n' + str(response_code) + '\n + content is :\n' + story)
             article.set_type('success')
             return article
 
