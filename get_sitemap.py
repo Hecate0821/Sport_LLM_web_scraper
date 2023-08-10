@@ -39,4 +39,4 @@ def get_sitemap(url):
             article_link_list.append(url_text)
     return article_link_list
 
-joblib.dump('cycling_list',get_sitemap(url))
+joblib.dump('./cycling_list',get_sitemap(url))
