@@ -116,8 +116,8 @@ def get_content(page_num):
                 break
 
         else:
-            article.set_content('404error in ' + my_url)
-            article.set_type('404error')
+            article.set_content('max retries error in ' + my_url)
+            article.set_type('max_retries_error')
             return article
 
             break
