@@ -38,6 +38,7 @@ error_massage = {
 
 skip_code = {
     '404',
+    '400',
 }
 
 # 重试策略
@@ -65,17 +66,12 @@ class Article:
 
 # put your code here
 def get_content(page_num):
+    
+    time.sleep(0.1)
+    
     article = Article()
 
     my_url = article_link_list[page_num]
-    ua = UserAgent()
-    random_ua = ua.random
-    headers = {'User-Agent': random_ua}
-
-    session = requests.Session()
-    adapter = HTTPAdapter(max_retries=retry_strategy)
-    session.mount("http://", adapter)
-    session.mount("https://", adapter)
 
     try:
         response = session.get(my_url, headers=headers)
@@ -269,6 +265,15 @@ if __name__ == '__main__':
     error_path = 'error_txt/'
     if not os.path.exists(local_path + error_path):
         os.mkdir(local_path + error_path)
+
+    ua = UserAgent()
+    random_ua = ua.random
+    headers = {'User-Agent': random_ua}
+
+    session = requests.Session()
+    adapter = HTTPAdapter(max_retries=retry_strategy)
+    session.mount("http://", adapter)
+    session.mount("https://", adapter)
 
     if args.p:
         check_progress()
