@@ -6,6 +6,9 @@ from threading import Thread
 from fake_useragent import UserAgent
 import argparse
 import joblib
+from requests.adapters import HTTPAdapter
+from requests.packages.urllib3.util.retry import Retry
+
 
 # article site url
 
@@ -33,21 +36,17 @@ error_massage = {
     'Error',
 }
 
-# code to skip
 skip_code = {
     '404',
 }
 
-# code to retry
-retry_code = {
-    '403',
-}
-
-# max retries and delay
-max_retries = int(50)
-retry_delay = int(5)
-
-delay_403 = int(20)
+# 重试策略
+retry_strategy = Retry(
+    total=10,  # 最大重试次数
+    status_forcelist=[403],  # 需要重试的HTTP状态码
+    backoff_factor=10,  # 重试之间的时间间隔因子
+    method_whitelist=["GET"]  # 仅对GET请求进行重试
+)
 
 class Article:
     content = 'default content'
@@ -55,7 +54,7 @@ class Article:
 
     def __init__(self):
         self.content = 'default content'
-        self.type = 'default type'
+        self.type = 'default_type'
 
     def set_content(self, content):
         self.content = content
@@ -73,70 +72,26 @@ def get_content(page_num):
     random_ua = ua.random
     headers = {'User-Agent': random_ua}
 
-    for i in range(max_retries):
-        try:
-            response = requests.get(my_url, headers=headers)
-            # 处理响应数据
-            break  # 请求成功，退出循环
-        except requests.exceptions.RequestException:
-            if i < max_retries - 1:
-                time.sleep(retry_delay)
-            else:
-                # 达到最大重试次数，进行错误处理
-                article.set_content('max retries error in ' + my_url)
-                article.set_type('max_retries_error')
-                return article
+    session = requests.Session()
+    adapter = HTTPAdapter(max_retries=retry_strategy)
+    session.mount("http://", adapter)
+    session.mount("https://", adapter)
+
+    try:
+        response = session.get(my_url, headers=headers)
+
+    except:
+        article.set_content('max retries in' + my_url)
+        article.set_type('max_retries_error')
+        return article
 
     response_code = response.status_code
 
     if any(word if int(word) == response_code else False for word in skip_code):
-        article.set_content(str(skip_code) + 'error in ' + my_url)
-        article.set_type(str(skip_code) + 'error')
+        article.set_content(str(response_code) + 'error in ' + my_url)
+        article.set_type(str(response_code) + 'error')
         return article
 
-    elif any(word if int(word) == response_code else False for word in retry_code):
-        my_response_code = ''
-        for j in range(max_retries):
-            try:
-                for i in range(max_retries):
-                    try:
-                        response = requests.get(my_url, headers=headers)
-                        # 处理响应数据
-                        break  # 请求成功，退出循环
-                    except requests.exceptions.RequestException:
-                        if i < max_retries - 1:
-                            time.sleep(retry_delay)
-                        else:
-                            # 达到最大重试次数，进行错误处理
-                            article.set_content('max retries error in ' + my_url)
-                            article.set_type('max_retries_error')
-                            return article
-
-                my_response_code = response.status_code
-
-                if any(word if int(word) == my_response_code else False for word in retry_code):
-                    pass
-
-                elif any(word if int(word) == response_code else False for word in skip_code):
-                    article.set_content(str(skip_code) + 'error in ' + my_url)
-                    article.set_type(str(skip_code) + 'error')
-
-                    return article
-
-                else:
-                    break
-
-            except:
-                if j < max_retries - 1:
-                    time.sleep(delay_403)
-                else:
-                    # 达到最大重试次数，进行错误处理
-                    article.set_content(str(response_code) + "error with url: " + my_url)
-                    article.set_type(str(response_code) + "error")
-                    return article
-
-
-    # put your code below:
     content = BeautifulSoup(response.text, 'html.parser')
     content_txt = content.text
 
@@ -144,22 +99,24 @@ def get_content(page_num):
     story = ''
 
     if art is None:
-        article.set_content(content_txt)
+        article.set_content('response code is :\n' + response_code + '\n + content is :\n' + content_txt)
         article.set_type('art==None_error')
         return article
+        
     else:
         for word in art:
             story = story + word.text
 
-        if story != None or story != '' or story != 'null':
-            article.set_content(story)
-            article.set_type('success')
-            return article
-
-        else:
+        if story == None or story == '' or story == 'null':
             article.set_content(content_txt)
             article.set_type('story==None_error')
             return article
+
+        else:
+            article.set_content('response code is :\n' + str(response_code) + '\n + content is :\n' + story)
+            article.set_type('success')
+            return article
+
 
 
 def save_log(start, end, now):
@@ -184,7 +141,7 @@ def check_log(start, end):
 
 
 def main():
-    workload = int((end_page - start_page) / thread_num) + 1
+    workload = int((end_page - start_page + 1) / thread_num)
 
     thread_list = []
 
@@ -230,15 +187,21 @@ def save_as_txt(file_name, file_content):
         f.close()
 
     else:
-        # create a directory for each type of error
-        type_path = local_path + error_path + file_content.type + '/'
-        if not os.path.exists(type_path):
-            os.mkdir(type_path)
+        if len(file_content.content) < least_size:
+            type_log_path = local_path + error_path + file_content.type + '.txt'
+            f = open(type_log_path, 'a')
+            f.write(file_content.content + '\n')
 
-        f = open(type_path + file_name + '.txt', 'w', encoding='UTF-8')
-        f.write(file_content.content)
-        f.close()
-        pass
+
+        else:
+            # create a directory for each type of error
+            type_path = local_path + error_path + file_content.type + '/'
+            if not os.path.exists(type_path):
+                os.mkdir(type_path)
+
+            f = open(type_path + file_name + '.txt', 'w', encoding='UTF-8')
+            f.write(file_content.content)
+            f.close()
 
 
 def check_progress():
