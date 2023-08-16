@@ -67,6 +67,10 @@ class Article:
 # put your code here
 def get_content(page_num):
     
+    session = requests.Session()
+    adapter = HTTPAdapter(max_retries=retry_strategy)
+    session.mount("http://", adapter)
+    session.mount("https://", adapter)
     time.sleep(0.1)
     
     article = Article()
@@ -269,10 +273,6 @@ if __name__ == '__main__':
     random_ua = ua.random
     headers = {'User-Agent': random_ua}
 
-    session = requests.Session()
-    adapter = HTTPAdapter(max_retries=retry_strategy)
-    session.mount("http://", adapter)
-    session.mount("https://", adapter)
 
     if args.p:
         check_progress()
