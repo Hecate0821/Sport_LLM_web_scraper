@@ -106,8 +106,8 @@ def get_content(page_num):
         pass
 
     try:
-        article = content.find(attrs={'id':'article-container-grid'}).get_text(separator='\n')
-        filecontent = filecontent + article
+        lines = content.find(attrs={'id':'article-container-grid'}).get_text(separator='\n')
+        filecontent = filecontent + lines
     except AttributeError:
         pass
 
