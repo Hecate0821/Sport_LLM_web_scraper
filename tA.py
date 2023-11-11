@@ -11,17 +11,16 @@ from requests.packages.urllib3.util.retry import Retry
 
 
 # article site url
+url = 'https://theathletic.com/'
 
-article_link_list = joblib.load('./fox_sports_link')
-# save directory
-const_local_path = './foxsports_generalsports/'
+const_local_path = './tA/'
 
 # scrape span
 start_page = int(0)
-end_page = int(1232800)
+end_page = int(480000)
 
 # save name
-txt_name = 'foxsports_'
+txt_name = 'tA_'
 
 # thread number
 # (end - start) is preferably a multiple of thread number
