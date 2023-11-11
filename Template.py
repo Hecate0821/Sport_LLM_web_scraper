@@ -91,7 +91,7 @@ def get_content(page_num):
     content = BeautifulSoup(response.text, 'html.parser')
     content_txt = content.text
 
-    art = content.find_all('p', class_="mg-t-b-20 ff-h fs-16 lh-1pt88 mg-t-b-20 article-content")
+    art = content.find_all()
     story = ''
 
     if art is None:
