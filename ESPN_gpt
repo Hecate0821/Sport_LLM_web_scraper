@@ -1,0 +1,32 @@
+def get_content(page_num):
+    time.sleep(0.1)  # delay to prevent server overload
+    article = Article()
+    my_url = article_link_list[page_num]
+
+    try:
+        response = session.get(my_url, headers=headers)
+        if response.status_code != 200:
+            raise Exception("Non-200 status code")
+    except Exception as e:
+        article.set_content('Error: ' + str(e) + ' in ' + my_url)
+        article.set_type('fetch_error')
+        return article
+
+    soup = BeautifulSoup(response.text, 'html.parser')
+    
+    # Example: Assuming main content is in <div class="main-content">
+    main_content = soup.find('div', class_='main-content')
+    if not main_content:
+        article.set_content('No main content found in ' + my_url)
+        article.set_type('content_error')
+        return article
+
+    # Extract text and avoid advertisements
+    text_parts = []
+    for paragraph in main_content.find_all('p'):
+        text_parts.append(paragraph.get_text())
+
+    full_text = ' '.join(text_parts)
+    article.set_content(full_text)
+    article.set_type('success')
+    return article
