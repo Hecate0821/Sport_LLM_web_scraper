@@ -92,6 +92,8 @@ def get_content(page_num):
 
     story = ''
 
+    filecontent = None
+
     try:
         headline = content.find(attrs={'class': 'article-headline'}).text
         filecontent = headline
