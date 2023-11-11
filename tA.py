@@ -88,6 +88,9 @@ def get_content(page_num):
         return article
 
     content = BeautifulSoup(response.text, 'html.parser')
+    content_txt = content.text
+
+    story = ''
 
     filecontent = None
     try:
