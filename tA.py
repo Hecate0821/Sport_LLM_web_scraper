@@ -17,7 +17,7 @@ const_local_path = './tA/'
 
 # scrape span
 start_page = int(0)
-end_page = int(480000)
+end_page = int(4800000)
 
 # save name
 txt_name = 'tA_'
