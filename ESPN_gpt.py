@@ -71,7 +71,7 @@ class Article:
 def get_content(page_num):
     time.sleep(0.1)  # delay to prevent server overload
     article = Article()
-    my_url = article_link_list[page_num]
+    my_url = url+str(page_num)
 
     try:
         response = session.get(my_url, headers=headers)
