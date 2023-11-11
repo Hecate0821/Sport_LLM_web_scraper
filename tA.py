@@ -132,7 +132,7 @@ def get_content(page_num):
             return article
 
         else:
-            article.set_content('response code is :\n' + str(response_code) + '\n + content is :\n' + story)
+            article.set_content(story)
             article.set_type('success')
             return article
 
