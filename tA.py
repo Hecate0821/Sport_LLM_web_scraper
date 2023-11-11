@@ -113,7 +113,7 @@ def get_content(page_num):
     except AttributeError:
         pass
 
-    filecontent = filecontent.replace('Advertisement\n', '')
+
 
     art = filecontent
     
@@ -123,8 +123,8 @@ def get_content(page_num):
         return article
         
     else:
-        for word in art:
-            story = story + word
+        art = art.replace('Advertisement\n', '')
+        stor = art
 
         if story == None or story == '' or story == 'null':
             article.set_content(content_txt)
