@@ -89,7 +89,7 @@ def get_content(page_num):
 
     content = BeautifulSoup(response.text, 'html.parser')
 
-    filecontent = None;
+    filecontent = None
     try:
         headline = content.find(attrs={'class': 'article-headline'}).text
         filecontent = headline
@@ -112,7 +112,7 @@ def get_content(page_num):
     filecontent = filecontent.replace('Advertisement\n', '')
 
     art = filecontent
-
+    
     if art is None:
         article.set_content('response code is :\n' + response_code + '\n + content is :\n' + content_txt)
         article.set_type('art==None_error')
