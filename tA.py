@@ -118,7 +118,7 @@ def get_content(page_num):
     art = filecontent
     
     if art is None:
-        article.set_content('response code is :\n' + response_code + '\n + content is :\n' + content_txt)
+        article.set_content('response code is :\n' + str(response_code) + '\n + content is :\n' + content_txt)
         article.set_type('art==None_error')
         return article
         
