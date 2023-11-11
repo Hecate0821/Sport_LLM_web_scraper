@@ -48,10 +48,11 @@ skip_code = {
 retry_strategy = Retry(
     total=10,  # 最大重试次数
     status_forcelist=[403],  # 需要重试的HTTP状态码
-    backoff_factor=10,  # 重试之间的时间间隔因子
+    backoff_factor=1000,  # 重试之间的时间间隔因子
     method_whitelist=["GET"]  # 仅对GET请求进行重试
 )
 
+sleep_timer = 10;
 class Article:
     content = 'default content'
     type = 'default type'
@@ -69,7 +70,7 @@ class Article:
 
 # put your code here
 def get_content(page_num):
-    time.sleep(0.1)  # delay to prevent server overload
+    time.sleep(sleep_timer)  # delay to prevent server overload
     article = Article()
     my_url = url+str(page_num)
 
