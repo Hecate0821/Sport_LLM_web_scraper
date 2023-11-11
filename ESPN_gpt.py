@@ -12,16 +12,19 @@ from requests.packages.urllib3.util.retry import Retry
 
 # article site url
 
-article_link_list = joblib.load('./fox_sports_link')
+# article site url
+url = 'https://www.espn.com/soccer/insider/story/_/id/'
+
 # save directory
-const_local_path = './foxsports_generalsports/'
+const_local_path = './espnArticles/'
+
+# save_name
+txt_name = 'espn_'
 
 # scrape span
 start_page = int(0)
 end_page = int(1232800)
 
-# save name
-txt_name = 'foxsports_'
 
 # thread number
 # (end - start) is preferably a multiple of thread number
