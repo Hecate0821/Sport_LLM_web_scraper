@@ -123,18 +123,10 @@ def get_content(page_num):
         return article
         
     else:
-        art = art.replace('Advertisement\n', '')
-        stor = art
+        article.set_content(art)
+        article.set_type('success')
+        return article
 
-        if story == None or story == '' or story == 'null':
-            article.set_content(content_txt)
-            article.set_type('story==None_error')
-            return article
-
-        else:
-            article.set_content(story)
-            article.set_type('success')
-            return article
 
 
 
