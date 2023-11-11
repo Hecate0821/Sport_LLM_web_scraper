@@ -122,7 +122,7 @@ def get_content(page_num):
         
     else:
         for word in art:
-            story = story + word.text
+            story = story + word
 
         if story == None or story == '' or story == 'null':
             article.set_content(content_txt)
