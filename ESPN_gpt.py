@@ -99,6 +99,9 @@ def get_content(page_num):
     full_text = ' '.join(text_parts)
     article.set_content(full_text)
     article.set_type('success')
+    
+    return article
+
 
 
 def save_log(start, end, now):
@@ -266,5 +269,3 @@ if __name__ == '__main__':
 
     else:
         main()
-
-    return article
