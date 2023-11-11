@@ -70,7 +70,7 @@ def get_content(page_num):
     
     article = Article()
 
-    my_url = article_link_list[page_num]
+    my_url = url + page_num
 
     try:
         response = session.get(my_url, headers=headers)
