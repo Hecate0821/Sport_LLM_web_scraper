@@ -92,23 +92,22 @@ def get_content(page_num):
 
     story = ''
 
-    filecontent = None
     try:
-        headline = content.find(attrs={'class': 'article-headline'})
+        headline = content.find(attrs={'class': 'article-headline'}).text
         filecontent = headline
     except AttributeError:
         pass
 
     try:
-        liveblog = content.find(attrs={'id':'live-blog-container'})
+        liveblog = content.find(attrs={'id':'live-blog-container'}).get_text(separator='\n')
         filecontent = liveblog
 
     except AttributeError:
         pass
 
     try:
-        lines = content.find(attrs={'id':'article-container-grid'})
-        filecontent = filecontent + lines
+        article = content.find(attrs={'id':'article-container-grid'}).get_text(separator='\n')
+        filecontent = filecontent + article
     except AttributeError:
         pass
 
