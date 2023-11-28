@@ -13,7 +13,7 @@ def is_english(text):
 
 
 def clean_text(text):
-    # 这里可以添加更多的清洗步骤
+    # 处理，可以加别的
     text = tprep.normalize.hyphenated_words(text)
     text = tprep.normalize.quotation_marks(text)
     text = tprep.normalize.unicode(text)
@@ -45,7 +45,7 @@ def process_directory(subdir, root_dir, excluded_dirs):
                     f.write(cleaned_content)
                 english_files.append(cleaned_file_path)
                 temp_files.append(cleaned_file_path)
-
+    # 英文文件
     if english_files:
         parent_dir = os.path.basename(os.path.dirname(subdir))
         current_dir = os.path.basename(subdir)
@@ -56,6 +56,7 @@ def process_directory(subdir, root_dir, excluded_dirs):
             for file_path in english_files:
                 tar.add(file_path, arcname=os.path.basename(file_path))
 
+        # 自动解压，方便看结果是否正确，之后正是跑删掉
         extract_dir = os.path.join(subdir, current_dir + "_extracted")
         with tarfile.open(tar_path, "r:gz") as tar:
             tar.extractall(path=extract_dir)
@@ -73,12 +74,11 @@ def process_files(root_dir, excluded_dirs):
             threads.append(t)
             t.start()
 
-    # 等待所有线程完成
     for t in threads:
         t.join()
 
 
 # 调用函数
-root_dir = './testfile'  # 替换为您的路径
-excluded_dirs = ['not', 'no2']  # 替换为您的排除目录
+root_dir = './testfile'  
+excluded_dirs = ['not', 'no2'] 
 process_files(root_dir, excluded_dirs)
